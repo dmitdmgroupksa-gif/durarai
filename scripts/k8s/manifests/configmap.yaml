@@ -1,0 +1,38 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: Durar-config
+  labels:
+    app: Durar
+data:
+  Durar.json: |
+    {
+      "gateway": {
+        "mode": "local",
+        "bind": "loopback",
+        "port": 18789,
+        "auth": {
+          "mode": "token"
+        },
+        "controlUi": {
+          "enabled": true
+        }
+      },
+      "agents": {
+        "defaults": {
+          "workspace": "~/.Durar/workspace"
+        },
+        "list": [
+          {
+            "id": "default",
+            "name": "Durar Assistant",
+            "workspace": "~/.Durar/workspace"
+          }
+        ]
+      },
+      "cron": { "enabled": false }
+    }
+  AGENTS.md: |
+    # Durar Assistant
+
+    You are a helpful AI assistant running in Kubernetes.

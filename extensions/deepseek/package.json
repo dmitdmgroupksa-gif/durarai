@@ -1,0 +1,12 @@
+{
+  "name": "@Durar/deepseek-provider",
+  "version": "2026.4.1-beta.1",
+  "private": true,
+  "description": "Durar DeepSeek provider plugin",
+  "type": "module",
+  "Durar": {
+    "extensions": [
+      "./index.ts"
+    ]
+  }
+}

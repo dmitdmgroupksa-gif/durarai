@@ -1,0 +1,7 @@
+<resources>
+    <string-array name="ask_Durar_query_patterns">
+        <item>ask Durar $prompt</item>
+        <item>tell Durar to $prompt</item>
+        <item>open Durar and ask $prompt</item>
+    </string-array>
+</resources>

@@ -1,0 +1,17 @@
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <capability
+        android:name="custom.actions.intent.ASK_Durar"
+        app:queryPatterns="@array/ask_Durar_query_patterns">
+        <intent
+            android:action="ai.Durar.app.action.ASK_Durar"
+            android:targetPackage="ai.Durar.app"
+            android:targetClass="ai.Durar.app.MainActivity">
+            <parameter
+                android:name="prompt"
+                android:key="prompt"
+                android:mimeType="text/*"
+                android:required="true" />
+        </intent>
+    </capability>
+</shortcuts>

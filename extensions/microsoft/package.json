@@ -1,0 +1,15 @@
+{
+  "name": "@Durar/microsoft-speech",
+  "version": "2026.4.1-beta.1",
+  "private": true,
+  "description": "Durar Microsoft speech plugin",
+  "type": "module",
+  "dependencies": {
+    "node-edge-tts": "^1.2.10"
+  },
+  "Durar": {
+    "extensions": [
+      "./index.ts"
+    ]
+  }
+}
