@@ -1,6 +1,12 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+# Ensure node is in PATH on Windows (Git Bash / WSL)
+NODE_DIR="/mnt/c/Program Files/nodejs"
+if [[ -d "$NODE_DIR" ]] && [[ ":$PATH:" != *":$NODE_DIR:"* ]]; then
+  export PATH="$NODE_DIR:$PATH"
+fi
+
 on_error() {
   echo "A2UI bundling failed. Re-run with: pnpm canvas:a2ui:bundle" >&2
   echo "If this persists, verify pnpm deps and try again." >&2

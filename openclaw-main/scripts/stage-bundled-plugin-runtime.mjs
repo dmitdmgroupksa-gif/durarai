@@ -18,6 +18,12 @@ function ensureSymlink(targetValue, targetPath, type) {
     return;
   } catch (error) {
     if (error?.code !== "EEXIST") {
+      // On Windows without admin/Developer Mode, fall back to copying
+      if (error.code === "EPERM" && process.platform === "win32") {
+        removePathIfExists(targetPath);
+        copyWithFallback(targetValue, targetPath);
+        return;
+      }
       throw error;
     }
   }
@@ -31,11 +37,48 @@ function ensureSymlink(targetValue, targetPath, type) {
   }
 
   removePathIfExists(targetPath);
-  fs.symlinkSync(targetValue, targetPath, type);
+  try {
+    fs.symlinkSync(targetValue, targetPath, type);
+  } catch (error) {
+    if (error.code === "EPERM" && process.platform === "win32") {
+      copyWithFallback(targetValue, targetPath);
+      return;
+    }
+    throw error;
+  }
+}
+
+function copyWithFallback(source, dest) {
+  const resolvedSource = path.resolve(path.dirname(dest), source);
+  if (fs.existsSync(resolvedSource)) {
+    const stat = fs.statSync(resolvedSource);
+    if (stat.isDirectory()) {
+      fs.cpSync(resolvedSource, dest, { recursive: true });
+    } else {
+      fs.copyFileSync(resolvedSource, dest);
+    }
+  }
 }
 
 function symlinkPath(sourcePath, targetPath, type) {
-  ensureSymlink(relativeSymlinkTarget(sourcePath, targetPath), targetPath, type);
+  const relativeTarget = relativeSymlinkTarget(sourcePath, targetPath);
+  try {
+    ensureSymlink(relativeTarget, targetPath, type);
+  } catch (error) {
+    if (error.code === "EPERM" && process.platform === "win32") {
+      removePathIfExists(targetPath);
+      if (fs.existsSync(sourcePath)) {
+        const stat = fs.statSync(sourcePath);
+        if (stat.isDirectory()) {
+          fs.cpSync(sourcePath, targetPath, { recursive: true });
+        } else {
+          fs.copyFileSync(sourcePath, targetPath);
+        }
+      }
+    } else {
+      throw error;
+    }
+  }
 }
 
 function shouldWrapRuntimeJsFile(sourcePath) {
