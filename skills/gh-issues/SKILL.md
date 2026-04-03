@@ -99,10 +99,10 @@ CONFIG_PATH="${Durar_CONFIG_PATH:-${Durar_STATE_DIR:-$HOME/.Durar}/Durar.json}"
 cat "$CONFIG_PATH" | jq -r '.skills.entries["gh-issues"].apiKey // empty'
 ```
 
-If still empty, check `/data/.clawdbot/Durar.json`:
+If still empty, check `/data/.Durar/Durar.json`:
 
 ```
-cat /data/.clawdbot/Durar.json | jq -r '.skills.entries["gh-issues"].apiKey // empty'
+cat /data/.Durar/Durar.json | jq -r '.skills.entries["gh-issues"].apiKey // empty'
 ```
 
 Export as GH_TOKEN for subsequent commands:
