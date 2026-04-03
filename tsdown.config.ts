@@ -122,6 +122,11 @@ function buildCoreDistEntries(): Record<string, string> {
     entry: "src/entry.ts",
     // Ensure this module is bundled as an entry so legacy CLI shims can resolve its exports.
     "cli/daemon-cli": "src/cli/daemon-cli.ts",
+    // CLI entry points that are dynamically imported from entry.ts.
+    // These must be explicit entries so tsdown preserves the output paths
+    // instead of emitting hashed chunks that entry.ts cannot resolve.
+    "cli/run-main": "src/cli/run-main.ts",
+    "cli/program/root-help": "src/cli/program/root-help.ts",
     // Keep long-lived lazy runtime boundaries on stable filenames so rebuilt
     // dist/ trees do not strand already-running gateways on stale hashed chunks.
     "agents/auth-profiles.runtime": "src/agents/auth-profiles.runtime.ts",
