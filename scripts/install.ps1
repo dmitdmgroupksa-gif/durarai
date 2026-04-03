@@ -207,15 +207,15 @@ function Install-DurarNpm {
     
     Write-Host "Installing Durar ($installSpec)..." -Level info
     
-    try {
-        # Use -ExecutionPolicy Bypass to handle restricted execution policy
-        npm install -g $installSpec --no-fund --no-audit 2>&1
-        Write-Host "Durar installed" -Level success
-        return $true
-    } catch {
-        Write-Host "npm install failed: $_" -Level error
+    # Run npm install and capture output; check exit code explicitly
+    $output = npm install -g $installSpec --no-fund --no-audit 2>&1
+    if ($LASTEXITCODE -ne 0) {
+        Write-Host "npm install failed (exit code $LASTEXITCODE)" -Level error
+        if ($output) { Write-Host $output -Level error }
         return $false
     }
+    Write-Host "Durar installed" -Level success
+    return $true
 }
 
 function Install-DurarGit {
