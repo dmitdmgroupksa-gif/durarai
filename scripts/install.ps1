@@ -207,9 +207,10 @@ function Install-DurarNpm {
     
     Write-Host "Installing Durar ($installSpec)..." -Level info
     
-    # Run npm install; suppress stderr (warnings like deprecation notices).
-    # Exit code is still captured via $LASTEXITCODE for failure detection.
-    $null = npm install -g $installSpec --no-fund --no-audit 2>$null
+    # Run npm install; suppress all output (warnings go to stderr and can
+    # leak through in PowerShell even with 2>$null). Exit code is still
+    # captured via $LASTEXITCODE for failure detection.
+    $null = npm install -g $installSpec --no-fund --no-audit 2>&1 | Out-Null
     if ($LASTEXITCODE -ne 0) {
         Write-Host "npm install failed (exit code $LASTEXITCODE)" -Level error
         return $false
