@@ -14,22 +14,23 @@ param(
 $ErrorActionPreference = "Stop"
 
 # Colors
-$ACCENT = "`e[38;2;255;77;77m"    # coral-bright
-$SUCCESS = "`e[38;2;0;229;204m"    # cyan-bright
-$WARN = "`e[38;2;255;176;32m"     # amber
-$ERROR = "`e[38;2;230;57;70m"     # coral-mid
-$MUTED = "`e[38;2;90;100;128m"    # text-muted
-$NC = "`e[0m"                     # No Color
+$ESC = if ($PSVersionTable.PSVersion.Major -ge 7) { "`e" } else { [char]27 }
+$ACCENT = "$ESC[38;2;255;77;77m"    # coral-bright
+$SUCCESS = "$ESC[38;2;0;229;204m"    # cyan-bright
+$WARN = "$ESC[38;2;255;176;32m"     # amber
+$ERR = "$ESC[38;2;230;57;70m"       # coral-mid
+$MUTED = "$ESC[38;2;90;100;128m"    # text-muted
+$NC = "$ESC[0m"                     # No Color
 
 function Write-Host {
     param([string]$Message, [string]$Level = "info")
     $msg = switch ($Level) {
         "success" { "$SUCCESS✓$NC $Message" }
         "warn" { "$WARN!$NC $Message" }
-        "error" { "$ERROR✗$NC $Message" }
+        "error" { "$ERR✗$NC $Message" }
         default { "$MUTED·$NC $Message" }
     }
-    Microsoft.PowerShell.Host\Write-Host $msg
+    Microsoft.PowerShell.Utility\Write-Host $msg
 }
 
 function Write-Banner {
