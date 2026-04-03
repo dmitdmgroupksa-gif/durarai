@@ -207,14 +207,48 @@ function Install-DurarNpm {
     
     Write-Host "Installing Durar ($installSpec)..." -Level info
     
-    # Run npm install; suppress all output (warnings go to stderr and can
-    # leak through in PowerShell even with 2>$null). Exit code is still
-    # captured via $LASTEXITCODE for failure detection.
-    $null = npm install -g $installSpec --no-fund --no-audit 2>&1 | Out-Null
-    if ($LASTEXITCODE -ne 0) {
-        Write-Host "npm install failed (exit code $LASTEXITCODE)" -Level error
+    # Find npm.cmd explicitly (Start-Process on Windows needs the .cmd extension)
+    $npmCmd = Get-Command npm.cmd -ErrorAction SilentlyContinue
+    if (!$npmCmd) {
+        $npmCmd = Get-Command npm -ErrorAction SilentlyContinue
+    }
+    if (!$npmCmd) {
+        Write-Host "npm not found" -Level error
         return $false
     }
+    $npmPath = $npmCmd.Source
+    
+    # Use a temp log file like the bash installer. Suppresses all output
+    # from user view while preserving exit code for failure detection.
+    $logFile = Join-Path $env:TEMP "durar-npm-install-$((Get-Date).ToString('yyyyMMdd-HHmmss')).log"
+    $errFile = Join-Path $env:TEMP "durar-npm-install-$((Get-Date).ToString('yyyyMMdd-HHmmss'))-err.log"
+    $process = Start-Process -FilePath $npmPath -ArgumentList "install", "-g", $installSpec, "--no-fund", "--no-audit" -NoNewWindow -Wait -PassThru -RedirectStandardOutput $logFile -RedirectStandardError $errFile
+    
+    if ($process.ExitCode -ne 0) {
+        Write-Host "npm install failed (exit code $($process.ExitCode))" -Level error
+        return $false
+    }
+    
+    # Post-install verification: check the package is actually installed
+    try {
+        $checkOutput = npm list -g $installSpec.Split("@")[0] --depth=0 2>&1
+        if ($checkOutput -match "empty" -or $checkOutput -match "ERR!") {
+            Write-Host "npm install completed but package verification failed" -Level error
+            Write-Host "Attempting cleanup and retry..." -Level warn
+            npm uninstall -g $installSpec.Split("@")[0] 2>$null | Out-Null
+            npm cache clean --force 2>$null | Out-Null
+            
+            $logFile2 = Join-Path $env:TEMP "durar-npm-install-retry-$((Get-Date).ToString('yyyyMMdd-HHmmss')).log"
+            $errFile2 = Join-Path $env:TEMP "durar-npm-install-retry-$((Get-Date).ToString('yyyyMMdd-HHmmss'))-err.log"
+            $process2 = Start-Process -FilePath $npmPath -ArgumentList "install", "-g", $installSpec, "--no-fund", "--no-audit" -NoNewWindow -Wait -PassThru -RedirectStandardOutput $logFile2 -RedirectStandardError $errFile2
+            
+            if ($process2.ExitCode -ne 0) {
+                Write-Host "npm install retry failed (exit code $($process2.ExitCode))" -Level error
+                return $false
+            }
+        }
+    } catch { }
+    
     Write-Host "Durar installed" -Level success
     return $true
 }
