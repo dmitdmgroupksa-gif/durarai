@@ -226,8 +226,8 @@ function Install-DurarNpm {
     $errFile = Join-Path $env:TEMP "durar-npm-install-$((Get-Date).ToString('yyyyMMdd-HHmmss'))-err.log"
     
     if ($Verbose) {
-        # Verbose mode: show npm output in real-time
-        & $npmPath install -g $installSpec --no-fund --no-audit 2>&1
+        # Verbose mode: show npm output in real-time (loglevel error suppresses warnings)
+        & $npmPath --loglevel error install -g $installSpec --no-fund --no-audit 2>&1
         $exitCode = $LASTEXITCODE
     } else {
         # Silent mode: redirect to log files
@@ -246,7 +246,7 @@ function Install-DurarNpm {
             Write-Host "npm left a stale directory; cleaning and retrying..." -Level warn
             Cleanup-NpmDurarPaths
             if ($Verbose) {
-                & $npmPath install -g $installSpec --no-fund --no-audit 2>&1
+                & $npmPath --loglevel error install -g $installSpec --no-fund --no-audit 2>&1
                 $exitCode = $LASTEXITCODE
             } else {
                 $process2 = Start-Process -FilePath $npmPath -ArgumentList "install", "-g", $installSpec, "--no-fund", "--no-audit" -NoNewWindow -Wait -PassThru -RedirectStandardOutput $logFile -RedirectStandardError $errFile
@@ -263,7 +263,7 @@ function Install-DurarNpm {
             Write-Host "npm failed due to a binary conflict; attempting cleanup..." -Level warn
             if (Cleanup-DurarBinConflict) {
                 if ($Verbose) {
-                    & $npmPath install -g $installSpec --no-fund --no-audit 2>&1
+                    & $npmPath --loglevel error install -g $installSpec --no-fund --no-audit 2>&1
                     $exitCode = $LASTEXITCODE
                 } else {
                     $process3 = Start-Process -FilePath $npmPath -ArgumentList "install", "-g", $installSpec, "--no-fund", "--no-audit" -NoNewWindow -Wait -PassThru -RedirectStandardOutput $logFile -RedirectStandardError $errFile
@@ -297,7 +297,7 @@ function Install-DurarNpm {
             $logFile2 = Join-Path $env:TEMP "durar-npm-install-retry-$((Get-Date).ToString('yyyyMMdd-HHmmss')).log"
             $errFile2 = Join-Path $env:TEMP "durar-npm-install-retry-$((Get-Date).ToString('yyyyMMdd-HHmmss'))-err.log"
             if ($Verbose) {
-                & $npmPath install -g $installSpec --no-fund --no-audit 2>&1
+                & $npmPath --loglevel error install -g $installSpec --no-fund --no-audit 2>&1
                 $exitCode2 = $LASTEXITCODE
             } else {
                 $process4 = Start-Process -FilePath $npmPath -ArgumentList "install", "-g", $installSpec, "--no-fund", "--no-audit" -NoNewWindow -Wait -PassThru -RedirectStandardOutput $logFile2 -RedirectStandardError $errFile2
