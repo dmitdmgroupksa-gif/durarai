@@ -1,0 +1,15 @@
+﻿// Copy to LocalSigning.xcconfig for personal local signing overrides.
+// This file is only an example and should stay committed.
+
+Durar_CODE_SIGN_STYLE = Automatic
+Durar_DEVELOPMENT_TEAM = YOUR_TEAM_ID
+
+Durar_APP_BUNDLE_ID = ai.Durar.client
+Durar_SHARE_BUNDLE_ID = ai.Durar.client.share
+Durar_ACTIVITY_WIDGET_BUNDLE_ID = ai.Durar.client.activitywidget
+Durar_WATCH_APP_BUNDLE_ID = ai.Durar.client.watchkitapp
+Durar_WATCH_EXTENSION_BUNDLE_ID = ai.Durar.client.watchkitapp.extension
+
+// Leave empty with automatic signing.
+Durar_APP_PROFILE =
+Durar_SHARE_PROFILE =

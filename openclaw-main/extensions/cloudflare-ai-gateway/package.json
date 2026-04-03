@@ -1,0 +1,12 @@
+{
+  "name": "@Durar/cloudflare-ai-gateway-provider",
+  "version": "2026.4.1-beta.1",
+  "private": true,
+  "description": "Durar Cloudflare AI Gateway provider plugin",
+  "type": "module",
+  "Durar": {
+    "extensions": [
+      "./index.ts"
+    ]
+  }
+}

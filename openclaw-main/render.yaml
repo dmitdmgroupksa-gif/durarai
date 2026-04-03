@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: Durar
+    runtime: docker
+    plan: starter
+    healthCheckPath: /health
+    envVars:
+      - key: Durar_GATEWAY_PORT
+        value: "8080"
+      - key: Durar_STATE_DIR
+        value: /data/.Durar
+      - key: Durar_WORKSPACE_DIR
+        value: /data/workspace
+      - key: Durar_GATEWAY_TOKEN
+        generateValue: true
+    disk:
+      name: Durar-data
+      mountPath: /data
+      sizeGB: 1

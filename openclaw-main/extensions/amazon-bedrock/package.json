@@ -1,0 +1,18 @@
+{
+  "name": "@Durar/amazon-bedrock-provider",
+  "version": "2026.4.1-beta.1",
+  "private": true,
+  "description": "Durar Amazon Bedrock provider plugin",
+  "type": "module",
+  "dependencies": {
+    "@aws-sdk/client-bedrock": "3.1020.0"
+  },
+  "Durar": {
+    "bundle": {
+      "stageRuntimeDependencies": true
+    },
+    "extensions": [
+      "./index.ts"
+    ]
+  }
+}

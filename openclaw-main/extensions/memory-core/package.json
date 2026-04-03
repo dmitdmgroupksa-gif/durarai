@@ -1,0 +1,23 @@
+{
+  "name": "@Durar/memory-core",
+  "version": "2026.4.1-beta.1",
+  "private": true,
+  "description": "Durar core memory search plugin",
+  "type": "module",
+  "devDependencies": {
+    "Durar": "workspace:*"
+  },
+  "peerDependencies": {
+    "Durar": ">=2026.4.1-beta.1"
+  },
+  "peerDependenciesMeta": {
+    "Durar": {
+      "optional": true
+    }
+  },
+  "Durar": {
+    "extensions": [
+      "./index.ts"
+    ]
+  }
+}
