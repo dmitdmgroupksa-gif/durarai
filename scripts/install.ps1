@@ -8,7 +8,9 @@ param(
     [string]$GitDir = "$env:USERPROFILE\Durar",
     [switch]$NoOnboard,
     [switch]$NoGitUpdate,
-    [switch]$DryRun
+    [switch]$DryRun,
+    [switch]$Verbose,
+    [switch]$Verify
 )
 
 $ErrorActionPreference = "Stop"
@@ -218,32 +220,92 @@ function Install-DurarNpm {
     }
     $npmPath = $npmCmd.Source
     
-    # Use a temp log file like the bash installer. Suppresses all output
-    # from user view while preserving exit code for failure detection.
+    # Use temp log files like the bash installer. In verbose mode, output is
+    # shown to the user. In silent mode, output goes to log files for diagnostics.
     $logFile = Join-Path $env:TEMP "durar-npm-install-$((Get-Date).ToString('yyyyMMdd-HHmmss')).log"
     $errFile = Join-Path $env:TEMP "durar-npm-install-$((Get-Date).ToString('yyyyMMdd-HHmmss'))-err.log"
-    $process = Start-Process -FilePath $npmPath -ArgumentList "install", "-g", $installSpec, "--no-fund", "--no-audit" -NoNewWindow -Wait -PassThru -RedirectStandardOutput $logFile -RedirectStandardError $errFile
     
-    if ($process.ExitCode -ne 0) {
-        Write-Host "npm install failed (exit code $($process.ExitCode))" -Level error
+    if ($Verbose) {
+        # Verbose mode: show npm output in real-time
+        & $npmPath install -g $installSpec --no-fund --no-audit 2>&1
+        $exitCode = $LASTEXITCODE
+    } else {
+        # Silent mode: redirect to log files
+        $process = Start-Process -FilePath $npmPath -ArgumentList "install", "-g", $installSpec, "--no-fund", "--no-audit" -NoNewWindow -Wait -PassThru -RedirectStandardOutput $logFile -RedirectStandardError $errFile
+        $exitCode = $process.ExitCode
+    }
+    
+    if ($exitCode -ne 0) {
+        # Handle common npm failure patterns with automatic retries
+        $errContent = if (Test-Path $errFile) { Get-Content $errFile -Raw } else { "" }
+        $logContent = if (Test-Path $logFile) { Get-Content $logFile -Raw } else { "" }
+        $combinedError = "$errContent`n$logContent"
+        
+        # ENOTEMPTY: npm left a stale directory
+        if ($combinedError -match "ENOTEMPTY.*Durar") {
+            Write-Host "npm left a stale directory; cleaning and retrying..." -Level warn
+            Cleanup-NpmDurarPaths
+            if ($Verbose) {
+                & $npmPath install -g $installSpec --no-fund --no-audit 2>&1
+                $exitCode = $LASTEXITCODE
+            } else {
+                $process2 = Start-Process -FilePath $npmPath -ArgumentList "install", "-g", $installSpec, "--no-fund", "--no-audit" -NoNewWindow -Wait -PassThru -RedirectStandardOutput $logFile -RedirectStandardError $errFile
+                $exitCode = $process2.ExitCode
+            }
+            if ($exitCode -eq 0) {
+                Write-Host "Durar installed (after cleanup retry)" -Level success
+                return $true
+            }
+        }
+        
+        # EEXIST: binary conflict
+        if ($combinedError -match "EEXIST") {
+            Write-Host "npm failed due to a binary conflict; attempting cleanup..." -Level warn
+            if (Cleanup-DurarBinConflict) {
+                if ($Verbose) {
+                    & $npmPath install -g $installSpec --no-fund --no-audit 2>&1
+                    $exitCode = $LASTEXITCODE
+                } else {
+                    $process3 = Start-Process -FilePath $npmPath -ArgumentList "install", "-g", $installSpec, "--no-fund", "--no-audit" -NoNewWindow -Wait -PassThru -RedirectStandardOutput $logFile -RedirectStandardError $errFile
+                    $exitCode = $process3.ExitCode
+                }
+                if ($exitCode -eq 0) {
+                    Write-Host "Durar installed (after conflict cleanup)" -Level success
+                    return $true
+                }
+            }
+        }
+        
+        Write-Host "npm install failed (exit code $exitCode)" -Level error
+        if (!$Verbose -and (Test-Path $logFile)) {
+            Write-Host "Showing last 20 lines of install log:" -Level warn
+            Get-Content $logFile -Tail 20 | ForEach-Object { Write-Host $_ -Level error }
+        }
         return $false
     }
     
     # Post-install verification: check the package is actually installed
     try {
-        $checkOutput = npm list -g $installSpec.Split("@")[0] --depth=0 2>&1
+        $pkgName = $installSpec.Split("@")[0]
+        $checkOutput = npm list -g $pkgName --depth=0 2>&1
         if ($checkOutput -match "empty" -or $checkOutput -match "ERR!") {
             Write-Host "npm install completed but package verification failed" -Level error
             Write-Host "Attempting cleanup and retry..." -Level warn
-            npm uninstall -g $installSpec.Split("@")[0] 2>$null | Out-Null
+            npm uninstall -g $pkgName 2>$null | Out-Null
             npm cache clean --force 2>$null | Out-Null
             
             $logFile2 = Join-Path $env:TEMP "durar-npm-install-retry-$((Get-Date).ToString('yyyyMMdd-HHmmss')).log"
             $errFile2 = Join-Path $env:TEMP "durar-npm-install-retry-$((Get-Date).ToString('yyyyMMdd-HHmmss'))-err.log"
-            $process2 = Start-Process -FilePath $npmPath -ArgumentList "install", "-g", $installSpec, "--no-fund", "--no-audit" -NoNewWindow -Wait -PassThru -RedirectStandardOutput $logFile2 -RedirectStandardError $errFile2
+            if ($Verbose) {
+                & $npmPath install -g $installSpec --no-fund --no-audit 2>&1
+                $exitCode2 = $LASTEXITCODE
+            } else {
+                $process4 = Start-Process -FilePath $npmPath -ArgumentList "install", "-g", $installSpec, "--no-fund", "--no-audit" -NoNewWindow -Wait -PassThru -RedirectStandardOutput $logFile2 -RedirectStandardError $errFile2
+                $exitCode2 = $process4.ExitCode
+            }
             
-            if ($process2.ExitCode -ne 0) {
-                Write-Host "npm install retry failed (exit code $($process2.ExitCode))" -Level error
+            if ($exitCode2 -ne 0) {
+                Write-Host "npm install retry failed (exit code $exitCode2)" -Level error
                 return $false
             }
         }
@@ -251,6 +313,42 @@ function Install-DurarNpm {
     
     Write-Host "Durar installed" -Level success
     return $true
+}
+
+function Cleanup-NpmDurarPaths {
+    $npmPrefix = npm config get prefix 2>$null
+    if ($npmPrefix) {
+        $stalePaths = @(
+            "$npmPrefix\node_modules\durar-cli",
+            "$npmPrefix\node_modules\.cache\durar-cli"
+        )
+        foreach ($path in $stalePaths) {
+            if (Test-Path $path) {
+                try {
+                    Remove-Item -Path $path -Recurse -Force -ErrorAction SilentlyContinue
+                } catch { }
+            }
+        }
+    }
+}
+
+function Cleanup-DurarBinConflict {
+    $npmPrefix = npm config get prefix 2>$null
+    if (!$npmPrefix) { return $false }
+    
+    $conflictFiles = @("$npmPrefix\durar", "$npmPrefix\durar.cmd", "$npmPrefix\durar.ps1")
+    $cleaned = $false
+    foreach ($file in $conflictFiles) {
+        if (Test-Path $file) {
+            try {
+                Remove-Item -Path $file -Force -ErrorAction SilentlyContinue
+                $cleaned = $true
+            } catch {
+                Write-Host "  Could not remove $file (may need admin)" -Level warn
+            }
+        }
+    }
+    return $cleaned
 }
 
 function Install-DurarGit {
@@ -333,6 +431,58 @@ function Add-ToPath {
     }
 }
 
+function Verify-Installation {
+    Write-Host "Verifying installation..." -Level info
+    
+    $durarCmd = Get-Command durar -ErrorAction SilentlyContinue
+    if (!$durarCmd) {
+        $durarCmd = Get-Command Durar -ErrorAction SilentlyContinue
+    }
+    if (!$durarCmd) {
+        Write-Host "durar binary not found in PATH" -Level error
+        $npmPrefix = npm config get prefix 2>$null
+        if ($npmPrefix) {
+            Write-Host "  npm global bin: $npmPrefix" -Level info
+            Write-Host "  Add it to PATH or restart your terminal" -Level warn
+        }
+        return $false
+    }
+    
+    # Run durar --help to confirm the binary works
+    try {
+        $helpOutput = & $durarCmd.Source --help 2>&1
+        if ($helpOutput) {
+            Write-Host "durar binary verified and responds to --help" -Level success
+        } else {
+            Write-Host "durar binary found but --help returned empty" -Level warn
+        }
+        return $true
+    } catch {
+        Write-Host "durar --help failed: $_" -Level error
+        return $false
+    }
+}
+
+function Refresh-GatewayService {
+    Write-Host "Checking for running gateway..." -Level info
+    
+    $gatewayProcesses = Get-Process -Name "node" -ErrorAction SilentlyContinue | Where-Object {
+        $_.CommandLine -match "durar.*gateway" -or $_.CommandLine -match "Durar.*gateway"
+    }
+    
+    if ($gatewayProcesses) {
+        Write-Host "Stopping running gateway processes..." -Level warn
+        foreach ($proc in $gatewayProcesses) {
+            try {
+                Stop-Process -Id $proc.Id -Force -ErrorAction SilentlyContinue
+            } catch { }
+        }
+        Write-Host "Gateway stopped (will restart on next 'Durar gateway run')" -Level success
+    } else {
+        Write-Host "No running gateway found" -Level info
+    }
+}
+
 # Main
 function Main {
     Write-Banner
@@ -364,6 +514,7 @@ function Main {
         # npm method
         if (!(Ensure-Git)) {
             Write-Host "Git is required for npm installs. Please install Git and try again." -Level warn
+            exit 1
         }
         
         if ($DryRun) {
@@ -382,6 +533,16 @@ function Main {
             Add-ToPath -Path "$npmPrefix"
         }
     } catch { }
+    
+    # Verify installation if --verify flag is set (or by default on fresh installs)
+    if ($Verify -or !$DryRun) {
+        Verify-Installation
+    }
+    
+    # Refresh gateway service for upgrades
+    if (!$DryRun) {
+        Refresh-GatewayService
+    }
     
     if (!$NoOnboard -and !$DryRun) {
         Write-Host ""
