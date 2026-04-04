@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Post-restart orphan recovery for subagent sessions.
  *
  * After a SIGUSR1 gateway reload aborts in-flight subagent LLM calls,

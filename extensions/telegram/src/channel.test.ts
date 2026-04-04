@@ -1,4 +1,4 @@
-﻿import type { DurarConfig } from "Durar/plugin-sdk/config-runtime";
+import type { DurarConfig } from "Durar/plugin-sdk/config-runtime";
 import type { PluginRuntime } from "Durar/plugin-sdk/testing";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { createStartAccountContext } from "../../../test/helpers/plugins/start-account-context.js";

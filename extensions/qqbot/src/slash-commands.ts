@@ -1,4 +1,4 @@
-﻿/**
+/**
  * QQBot plugin-level slash command handler.
  *
  * Design goals:

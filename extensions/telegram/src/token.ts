@@ -1,4 +1,4 @@
-﻿import { resolveNormalizedAccountEntry } from "Durar/plugin-sdk/account-core";
+import { resolveNormalizedAccountEntry } from "Durar/plugin-sdk/account-core";
 import type { BaseTokenResolution } from "Durar/plugin-sdk/channel-contract";
 import type { DurarConfig } from "Durar/plugin-sdk/config-runtime";
 import { tryReadSecretFileSync } from "Durar/plugin-sdk/core";

@@ -1,4 +1,4 @@
-﻿import { formatUnknownError } from "./errors.js";
+import { formatUnknownError } from "./errors.js";
 import type { MSTeamsAdapter } from "./messenger.js";
 import type { MSTeamsCredentials } from "./token.js";
 import { buildUserAgent } from "./user-agent.js";

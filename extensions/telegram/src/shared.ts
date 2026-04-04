@@ -1,4 +1,4 @@
-﻿import { resolveNormalizedAccountEntry } from "Durar/plugin-sdk/account-core";
+import { resolveNormalizedAccountEntry } from "Durar/plugin-sdk/account-core";
 import { formatAllowFromLowercase } from "Durar/plugin-sdk/allow-from";
 import {
   adaptScopedAccountAccessor,

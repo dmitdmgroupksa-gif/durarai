@@ -1,4 +1,4 @@
-﻿import { resetToolStream } from "../app-tool-stream.ts";
+import { resetToolStream } from "../app-tool-stream.ts";
 import { extractText } from "../chat/message-extract.ts";
 import { formatConnectError } from "../connect-error.ts";
 import type { GatewayBrowserClient } from "../gateway.ts";

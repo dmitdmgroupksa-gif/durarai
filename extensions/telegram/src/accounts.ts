@@ -1,4 +1,4 @@
-﻿import util from "node:util";
+import util from "node:util";
 import {
   createAccountActionGate,
   DEFAULT_ACCOUNT_ID,
