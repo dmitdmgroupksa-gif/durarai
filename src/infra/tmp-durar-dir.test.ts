@@ -1,6 +1,6 @@
 import path from "node:path";
 import { describe, expect, it, vi } from "vitest";
-import { POSIX_Durar_TMP_DIR, resolvePreferredDurarTmpDir } from "./tmp-Durar-dir.js";
+import { POSIX_Durar_TMP_DIR, resolvePreferredDurarTmpDir } from "./tmp-durar-dir.js";
 
 type TmpDirOptions = NonNullable<Parameters<typeof resolvePreferredDurarTmpDir>[0]>;
 

@@ -15,14 +15,14 @@ vi.mock("../plugins/tools.js", () => ({
   getPluginToolMeta: vi.fn(() => undefined),
 }));
 
-let createDurarTools: typeof import("./Durar-tools.js").createDurarTools;
+let createDurarTools: typeof import("./durar-tools.js").createDurarTools;
 let createDurarCodingTools: typeof import("./pi-tools.js").createDurarCodingTools;
 
 describe("createDurarTools plugin context", () => {
   beforeEach(async () => {
     resolvePluginToolsMock.mockClear();
     vi.resetModules();
-    ({ createDurarTools } = await import("./Durar-tools.js"));
+    ({ createDurarTools } = await import("./durar-tools.js"));
     ({ createDurarCodingTools } = await import("./pi-tools.js"));
   });
 

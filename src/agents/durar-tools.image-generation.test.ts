@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { DurarConfig } from "../config/config.js";
 import * as imageGenerationRuntime from "../image-generation/runtime.js";
-import { createDurarTools } from "./Durar-tools.js";
+import { createDurarTools } from "./durar-tools.js";
 
 vi.mock("../plugins/tools.js", () => ({
   resolvePluginTools: () => [],

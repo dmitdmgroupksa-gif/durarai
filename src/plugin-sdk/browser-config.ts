@@ -10,7 +10,7 @@ import {
 import { resolveGatewayAuth } from "../gateway/auth.js";
 import { isLoopbackHost } from "../gateway/net.js";
 import type { SsrFPolicy } from "../infra/net/ssrf.js";
-import { resolvePreferredDurarTmpDir } from "../infra/tmp-Durar-dir.js";
+import { resolvePreferredDurarTmpDir } from "../infra/tmp-durar-dir.js";
 import { redactSensitiveText } from "../logging/redact.js";
 import { resolveUserPath } from "../utils.js";
 

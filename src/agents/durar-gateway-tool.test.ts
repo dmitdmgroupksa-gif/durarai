@@ -50,12 +50,12 @@ function createGatewayToolModuleMocks() {
 
 vi.mock("./tools/gateway.js", () => createGatewayToolModuleMocks());
 
-let createDurarTools: typeof import("./Durar-tools.js").createDurarTools;
+let createDurarTools: typeof import("./durar-tools.js").createDurarTools;
 
 async function loadFreshDurarToolsModuleForTest() {
   vi.resetModules();
   vi.doMock("./tools/gateway.js", () => createGatewayToolModuleMocks());
-  ({ createDurarTools } = await import("./Durar-tools.js"));
+  ({ createDurarTools } = await import("./durar-tools.js"));
 }
 
 function requireGatewayTool(agentSessionKey?: string) {

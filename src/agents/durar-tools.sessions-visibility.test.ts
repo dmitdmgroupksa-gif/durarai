@@ -19,7 +19,7 @@ vi.mock("../config/config.js", async (importOriginal) => {
 
 import "./test-helpers/fast-core-tools.js";
 
-let createDurarTools: typeof import("./Durar-tools.js").createDurarTools;
+let createDurarTools: typeof import("./durar-tools.js").createDurarTools;
 
 async function loadFreshDurarToolsModuleForTest() {
   vi.resetModules();
@@ -34,7 +34,7 @@ async function loadFreshDurarToolsModuleForTest() {
       resolveGatewayPort: () => 18789,
     };
   });
-  ({ createDurarTools } = await import("./Durar-tools.js"));
+  ({ createDurarTools } = await import("./durar-tools.js"));
 }
 
 function getSessionsHistoryTool(options?: { sandboxed?: boolean }) {

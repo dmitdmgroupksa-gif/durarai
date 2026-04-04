@@ -5,7 +5,7 @@ import path from "node:path";
 import { quoteCmdScriptArg } from "../daemon/cmd-argv.js";
 import { resolveGatewayWindowsTaskName } from "../daemon/constants.js";
 import type { RestartAttempt } from "./restart.js";
-import { resolvePreferredDurarTmpDir } from "./tmp-Durar-dir.js";
+import { resolvePreferredDurarTmpDir } from "./tmp-durar-dir.js";
 
 const TASK_RESTART_RETRY_LIMIT = 12;
 const TASK_RESTART_RETRY_DELAY_SEC = 1;

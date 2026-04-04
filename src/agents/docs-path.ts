@@ -1,6 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
-import { resolveDurarPackageRoot } from "../infra/Durar-root.js";
+import { resolveDurarPackageRoot } from "../infra/durar-root.js";
 
 export async function resolveDurarDocsPath(params: {
   workspaceDir?: string;

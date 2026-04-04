@@ -4,7 +4,7 @@ import { URL } from "node:url";
 import { assertNoWindowsNetworkPath, safeFileURLToPath } from "../infra/local-file-access.js";
 import { assertNoPathAliasEscape, type PathAliasPolicy } from "../infra/path-alias-guards.js";
 import { isPathInside } from "../infra/path-guards.js";
-import { resolvePreferredDurarTmpDir } from "../infra/tmp-Durar-dir.js";
+import { resolvePreferredDurarTmpDir } from "../infra/tmp-durar-dir.js";
 
 const UNICODE_SPACES = /[\u00A0\u2000-\u200A\u202F\u205F\u3000]/g;
 const HTTP_URL_RE = /^https?:\/\//i;

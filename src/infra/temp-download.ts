@@ -1,9 +1,9 @@
 import crypto from "node:crypto";
 import { mkdtemp, rm } from "node:fs/promises";
 import path from "node:path";
-import { resolvePreferredDurarTmpDir } from "./tmp-Durar-dir.js";
+import { resolvePreferredDurarTmpDir } from "./tmp-durar-dir.js";
 
-export { resolvePreferredDurarTmpDir } from "./tmp-Durar-dir.js";
+export { resolvePreferredDurarTmpDir } from "./tmp-durar-dir.js";
 
 export type TempDownloadTarget = {
   dir: string;

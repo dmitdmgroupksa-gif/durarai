@@ -2,7 +2,7 @@ import type { ChildProcess } from "node:child_process";
 import { EventEmitter } from "node:events";
 import process from "node:process";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { Durar_CLI_ENV_VALUE } from "../infra/Durar-exec-env.js";
+import { Durar_CLI_ENV_VALUE } from "../infra/durar-exec-env.js";
 import { attachChildProcessBridge } from "./child-process-bridge.js";
 import {
   resolveCommandEnv,

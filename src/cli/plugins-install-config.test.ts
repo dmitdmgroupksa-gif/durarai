@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { bundledPluginRootAt, repoInstallSpec } from "../../test/helpers/bundled-plugin-paths.js";
 import type { DurarConfig } from "../config/config.js";
-import type { ConfigFileSnapshot } from "../config/types.Durar.js";
+import type { ConfigFileSnapshot } from "../config/types.durar.js";
 import { loadConfigForInstall } from "./plugins-install-command.js";
 
 const hoisted = vi.hoisted(() => ({

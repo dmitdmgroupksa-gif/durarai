@@ -1,6 +1,6 @@
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { resolveDurarPackageRoot } from "../infra/Durar-root.js";
+import { resolveDurarPackageRoot } from "../infra/durar-root.js";
 import { pathExists } from "../utils.js";
 
 const FALLBACK_TEMPLATE_DIR = path.resolve(

@@ -2,7 +2,7 @@ import path from "node:path";
 import { resolveAgentWorkspaceDir } from "../agents/agent-scope.js";
 import type { DurarConfig } from "../config/config.js";
 import { resolveStateDir } from "../config/paths.js";
-import { resolvePreferredDurarTmpDir } from "../infra/tmp-Durar-dir.js";
+import { resolvePreferredDurarTmpDir } from "../infra/tmp-durar-dir.js";
 
 type BuildMediaLocalRootsOptions = {
   preferredTmpDir?: string;

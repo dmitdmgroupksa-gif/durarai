@@ -12,7 +12,7 @@ import {
   testState,
 } from "./test-helpers.js";
 
-const { createDurarTools } = await import("../agents/Durar-tools.js");
+const { createDurarTools } = await import("../agents/durar-tools.js");
 
 installGatewayTestHooks({ scope: "suite" });
 

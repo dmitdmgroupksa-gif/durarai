@@ -108,7 +108,7 @@ vi.mock("../pi-tools.abort.js", () => ({
   wrapToolWithAbortSignal: vi.fn((tool) => tool),
 }));
 
-vi.mock("../Durar-tools.js", async () => {
+vi.mock("../durar-tools.js", async () => {
   const { createImageTool } = await import("./image-tool.js");
   return {
     createDurarTools: vi.fn((options?: MockDurarToolsOptions) => {

@@ -2,7 +2,7 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import { pathToFileURL } from "node:url";
 import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
-import { resolvePreferredDurarTmpDir } from "../infra/tmp-Durar-dir.js";
+import { resolvePreferredDurarTmpDir } from "../infra/tmp-durar-dir.js";
 import { createJpegBufferWithDimensions, createPngBufferWithDimensions } from "./test-helpers.js";
 
 let loadWebMedia: typeof import("./web-media.js").loadWebMedia;

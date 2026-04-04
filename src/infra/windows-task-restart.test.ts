@@ -10,7 +10,7 @@ const resolvePreferredDurarTmpDirMock = vi.hoisted(() => vi.fn(() => os.tmpdir()
 vi.mock("node:child_process", () => ({
   spawn: (...args: unknown[]) => spawnMock(...args),
 }));
-vi.mock("./tmp-Durar-dir.js", () => ({
+vi.mock("./tmp-durar-dir.js", () => ({
   resolvePreferredDurarTmpDir: () => resolvePreferredDurarTmpDirMock(),
 }));
 

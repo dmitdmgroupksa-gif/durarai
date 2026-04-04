@@ -16,7 +16,7 @@ vi.mock("../config/config.js", async (importOriginal) => {
 
 import "./test-helpers/fast-core-tools.js";
 
-let createDurarTools: typeof import("./Durar-tools.js").createDurarTools;
+let createDurarTools: typeof import("./durar-tools.js").createDurarTools;
 
 describe("agents_list", () => {
   type AgentConfig = NonNullable<NonNullable<typeof configOverride.agents>["list"]>[number];
@@ -51,7 +51,7 @@ describe("agents_list", () => {
       session: createPerSenderSessionConfig(),
     };
     await import("./test-helpers/fast-core-tools.js");
-    ({ createDurarTools } = await import("./Durar-tools.js"));
+    ({ createDurarTools } = await import("./durar-tools.js"));
   });
 
   it("defaults to the requester agent only", async () => {

@@ -1,7 +1,7 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
-import { resolvePreferredDurarTmpDir } from "../infra/tmp-Durar-dir.js";
+import { resolvePreferredDurarTmpDir } from "../infra/tmp-durar-dir.js";
 import { buildRandomTempFilePath, withTempDownloadPath } from "./temp-path.js";
 
 function expectPathInsideTmpRoot(resultPath: string) {

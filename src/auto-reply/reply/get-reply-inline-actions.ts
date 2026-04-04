@@ -221,7 +221,7 @@ export async function handleInlineActions(params: {
         resolveGatewayMessageChannel(ctx.Provider) ??
         undefined;
 
-      const { createDurarTools } = await import("../../agents/Durar-tools.runtime.js");
+      const { createDurarTools } = await import("../../agents/durar-tools.runtime.js");
       const tools = createDurarTools({
         agentSessionKey: sessionKey,
         agentChannel: channel,

@@ -5,7 +5,7 @@ import type { DurarConfig } from "../config/types.js";
 import {
   POSIX_Durar_TMP_DIR,
   resolvePreferredDurarTmpDir,
-} from "../infra/tmp-Durar-dir.js";
+} from "../infra/tmp-durar-dir.js";
 import { readLoggingConfig, shouldSkipMutatingLoggingConfigRead } from "./config.js";
 import type { ConsoleStyle } from "./console.js";
 import { resolveEnvLogLevelOverride } from "./env-log-level.js";

@@ -23,7 +23,7 @@ async function loadFreshInlineActionsModuleForTest() {
     handleCommands: (...args: unknown[]) => handleCommandsMock(...args),
     buildStatusReply: (...args: unknown[]) => buildStatusReplyMock(...args),
   }));
-  vi.doMock("../../agents/Durar-tools.runtime.js", () => ({
+  vi.doMock("../../agents/durar-tools.runtime.js", () => ({
     createDurarTools: (...args: unknown[]) => createDurarToolsMock(...args),
   }));
   vi.doMock("../../channels/plugins/index.js", async (importOriginal) => {

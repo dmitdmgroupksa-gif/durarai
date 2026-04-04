@@ -47,4 +47,4 @@ export {
   type PluginCommandRunOptions,
   type PluginCommandRunResult,
 } from "./run-command.js";
-export { resolvePreferredDurarTmpDir } from "../infra/tmp-Durar-dir.js";
+export { resolvePreferredDurarTmpDir } from "../infra/tmp-durar-dir.js";

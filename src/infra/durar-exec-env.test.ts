@@ -4,7 +4,7 @@ import {
   markDurarExecEnv,
   Durar_CLI_ENV_VALUE,
   Durar_CLI_ENV_VAR,
-} from "./Durar-exec-env.js";
+} from "./durar-exec-env.js";
 
 describe("markDurarExecEnv", () => {
   it("returns a cloned env object with the exec marker set", () => {

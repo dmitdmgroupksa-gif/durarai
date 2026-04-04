@@ -14,7 +14,7 @@ vi.mock("../media/image-ops.js", () => ({
   resizeToJpeg: vi.fn(async () => Buffer.from("jpeg")),
 }));
 
-let createDurarTools: typeof import("./Durar-tools.js").createDurarTools;
+let createDurarTools: typeof import("./durar-tools.js").createDurarTools;
 
 const NODE_ID = "mac-1";
 const JPG_PAYLOAD = {
@@ -753,5 +753,5 @@ describe("nodes invoke", () => {
 async function loadDurarToolsForTest(): Promise<void> {
   vi.resetModules();
   await import("./test-helpers/fast-core-tools.js");
-  ({ createDurarTools } = await import("./Durar-tools.js"));
+  ({ createDurarTools } = await import("./durar-tools.js"));
 }

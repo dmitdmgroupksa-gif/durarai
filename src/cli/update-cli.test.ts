@@ -3,7 +3,7 @@ import os from "node:os";
 import path from "node:path";
 import { Command } from "commander";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import type { DurarConfig, ConfigFileSnapshot } from "../config/types.Durar.js";
+import type { DurarConfig, ConfigFileSnapshot } from "../config/types.durar.js";
 import type { UpdateRunResult } from "../infra/update-runner.js";
 import { BUNDLED_RUNTIME_SIDECAR_PATHS } from "../plugins/public-artifacts.js";
 import { withEnvAsync } from "../test-utils/env.js";
@@ -43,7 +43,7 @@ vi.mock("../infra/update-runner.js", () => ({
   runGatewayUpdate: vi.fn(),
 }));
 
-vi.mock("../infra/Durar-root.js", () => ({
+vi.mock("../infra/durar-root.js", () => ({
   resolveDurarPackageRoot: vi.fn(),
 }));
 
@@ -148,7 +148,7 @@ vi.mock("../runtime.js", () => ({
 }));
 
 const { runGatewayUpdate } = await import("../infra/update-runner.js");
-const { resolveDurarPackageRoot } = await import("../infra/Durar-root.js");
+const { resolveDurarPackageRoot } = await import("../infra/durar-root.js");
 const { readConfigFileSnapshot, replaceConfigFile } = await import("../config/config.js");
 const { checkUpdateStatus, fetchNpmPackageTargetStatus, fetchNpmTagVersion, resolveNpmChannelTag } =
   await import("../infra/update-check.js");

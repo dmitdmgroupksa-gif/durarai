@@ -8,7 +8,7 @@ import {
   resetSessionsSpawnHookRunnerOverride,
   setSessionsSpawnConfigOverride,
   setSessionsSpawnHookRunnerOverride,
-} from "./Durar-tools.subagents.sessions-spawn.test-harness.js";
+} from "./durar-tools.subagents.sessions-spawn.test-harness.js";
 import { resetSubagentRegistryForTests } from "./subagent-registry.js";
 
 const hookRunnerMocks = vi.hoisted(() => ({

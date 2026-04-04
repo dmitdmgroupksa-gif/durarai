@@ -41,7 +41,7 @@ export * from "../infra/secret-file.js";
 export * from "../infra/secure-random.js";
 export * from "../infra/system-events.js";
 export * from "../infra/system-message.ts";
-export * from "../infra/tmp-Durar-dir.js";
+export * from "../infra/tmp-durar-dir.js";
 export * from "../infra/transport-ready.js";
 export * from "../infra/wsl.ts";
 export * from "../utils/fetch-timeout.js";

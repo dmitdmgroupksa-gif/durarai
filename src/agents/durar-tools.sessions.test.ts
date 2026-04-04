@@ -33,7 +33,7 @@ vi.mock("../config/config.js", async (importOriginal) => {
 });
 
 import "./test-helpers/fast-core-tools.js";
-import { __testing as DurarToolsTesting, createDurarTools } from "./Durar-tools.js";
+import { __testing as DurarToolsTesting, createDurarTools } from "./durar-tools.js";
 import { __testing as subagentControlTesting } from "./subagent-control.js";
 import { __testing as agentStepTesting } from "./tools/agent-step.js";
 import { __testing as sessionsResolutionTesting } from "./tools/sessions-resolution.js";

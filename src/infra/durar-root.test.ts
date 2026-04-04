@@ -30,9 +30,9 @@ function setPackageRoot(root: string, name = "Durar") {
 }
 
 function expectResolvedPackageRoot(
-  syncResolver: typeof import("./Durar-root.js").resolveDurarPackageRootSync,
-  asyncResolver: typeof import("./Durar-root.js").resolveDurarPackageRoot,
-  opts: Parameters<typeof import("./Durar-root.js").resolveDurarPackageRootSync>[0],
+  syncResolver: typeof import("./durar-root.js").resolveDurarPackageRootSync,
+  asyncResolver: typeof import("./durar-root.js").resolveDurarPackageRoot,
+  opts: Parameters<typeof import("./durar-root.js").resolveDurarPackageRootSync>[0],
   expected: string | null,
 ) {
   expect(syncResolver(opts)).toBe(expected);
@@ -101,13 +101,13 @@ vi.mock("node:fs/promises", async (importOriginal) => {
 });
 
 describe("resolveDurarPackageRoot", () => {
-  let resolveDurarPackageRoot: typeof import("./Durar-root.js").resolveDurarPackageRoot;
-  let resolveDurarPackageRootSync: typeof import("./Durar-root.js").resolveDurarPackageRootSync;
+  let resolveDurarPackageRoot: typeof import("./durar-root.js").resolveDurarPackageRoot;
+  let resolveDurarPackageRootSync: typeof import("./durar-root.js").resolveDurarPackageRootSync;
 
   beforeEach(async () => {
     vi.resetModules();
     ({ resolveDurarPackageRoot, resolveDurarPackageRootSync } =
-      await import("./Durar-root.js"));
+      await import("./durar-root.js"));
     state.entries.clear();
     state.realpaths.clear();
     state.realpathErrors.clear();

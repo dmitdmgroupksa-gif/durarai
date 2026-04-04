@@ -8,7 +8,7 @@ import { createBrowserTool } from "../plugin-sdk/browser.js";
 import { XAI_UNSUPPORTED_SCHEMA_KEYWORDS } from "../plugin-sdk/provider-tools.js";
 import { applyXaiModelCompat } from "../plugin-sdk/xai.js";
 import "./test-helpers/fast-coding-tools.js";
-import { createDurarTools } from "./Durar-tools.js";
+import { createDurarTools } from "./durar-tools.js";
 import { findUnsupportedSchemaKeywords } from "./pi-embedded-runner/google.js";
 import { __testing, createDurarCodingTools } from "./pi-tools.js";
 import { createDurarReadTool, createSandboxedReadTool } from "./pi-tools.read.js";

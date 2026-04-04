@@ -19,9 +19,9 @@ async function importBrowserSafeLogger(params?: {
       throw new Error("resolvePreferredDurarTmpDir should not run during browser-safe import");
     });
 
-  vi.doMock("../infra/tmp-Durar-dir.js", async () => {
-    const actual = await vi.importActual<typeof import("../infra/tmp-Durar-dir.js")>(
-      "../infra/tmp-Durar-dir.js",
+  vi.doMock("../infra/tmp-durar-dir.js", async () => {
+    const actual = await vi.importActual<typeof import("../infra/tmp-durar-dir.js")>(
+      "../infra/tmp-durar-dir.js",
     );
     return {
       ...actual,
@@ -41,7 +41,7 @@ async function importBrowserSafeLogger(params?: {
 describe("logging/logger browser-safe import", () => {
   afterEach(() => {
     vi.resetModules();
-    vi.doUnmock("../infra/tmp-Durar-dir.js");
+    vi.doUnmock("../infra/tmp-durar-dir.js");
     Object.defineProperty(process, "getBuiltinModule", {
       configurable: true,
       value: originalGetBuiltinModule,

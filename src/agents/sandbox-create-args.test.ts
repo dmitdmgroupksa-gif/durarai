@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { Durar_CLI_ENV_VALUE } from "../infra/Durar-exec-env.js";
+import { Durar_CLI_ENV_VALUE } from "../infra/durar-exec-env.js";
 import { buildSandboxCreateArgs } from "./sandbox/docker.js";
 import type { SandboxDockerConfig } from "./sandbox/types.js";
 

@@ -44,7 +44,7 @@ export {
 export type { GroupToolPolicyConfig, MarkdownTableMode } from "../config/types.js";
 export { ToolPolicySchema } from "../config/zod-schema.agent-runtime.js";
 export { MarkdownConfigSchema } from "../config/zod-schema.core.js";
-export { resolvePreferredDurarTmpDir } from "../infra/tmp-Durar-dir.js";
+export { resolvePreferredDurarTmpDir } from "../infra/tmp-durar-dir.js";
 export { emptyPluginConfigSchema } from "../plugins/config-schema.js";
 export type { PluginRuntime } from "../plugins/runtime/types.js";
 export type {

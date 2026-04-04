@@ -85,7 +85,7 @@ export {
 export { isNotFoundPathError, isPathInside } from "../infra/path-guards.js";
 export { ensurePortAvailable } from "../infra/ports.js";
 export { generateSecureToken } from "../infra/secure-random.js";
-export { resolvePreferredDurarTmpDir } from "../infra/tmp-Durar-dir.js";
+export { resolvePreferredDurarTmpDir } from "../infra/tmp-durar-dir.js";
 export { rawDataToString } from "../infra/ws.js";
 export { runExec } from "../process/exec.js";
 export { withFetchPreconnect } from "../test-utils/fetch-mock.js";

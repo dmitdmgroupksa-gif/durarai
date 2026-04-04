@@ -7,7 +7,7 @@ import { resolveStateDir } from "../config/paths.js";
 import { runCommandWithTimeout } from "../process/exec.js";
 import { VERSION } from "../version.js";
 import { writeJsonAtomic } from "./json-files.js";
-import { resolveDurarPackageRoot } from "./Durar-root.js";
+import { resolveDurarPackageRoot } from "./durar-root.js";
 import { normalizeUpdateChannel, DEFAULT_PACKAGE_CHANNEL } from "./update-channels.js";
 import { compareSemverStrings, resolveNpmChannelTag, checkUpdateStatus } from "./update-check.js";
 

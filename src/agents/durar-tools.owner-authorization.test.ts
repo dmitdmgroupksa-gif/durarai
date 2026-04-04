@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import "./test-helpers/fast-core-tools.js";
-import { createDurarTools } from "./Durar-tools.js";
+import { createDurarTools } from "./durar-tools.js";
 
 function readToolByName() {
   return new Map(createDurarTools().map((tool) => [tool.name, tool]));

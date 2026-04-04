@@ -8,7 +8,7 @@ import type { DurarConfig } from "../../config/config.js";
 import { logVerbose } from "../../globals.js";
 import { copyFileWithinRoot, SafeOpenError } from "../../infra/fs-safe.js";
 import { normalizeScpRemoteHost, normalizeScpRemotePath } from "../../infra/scp-host.js";
-import { resolvePreferredDurarTmpDir } from "../../infra/tmp-Durar-dir.js";
+import { resolvePreferredDurarTmpDir } from "../../infra/tmp-durar-dir.js";
 import {
   isInboundPathAllowed,
   resolveIMessageRemoteAttachmentRoots,

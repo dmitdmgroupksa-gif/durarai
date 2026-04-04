@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import type { DurarConfig } from "../../config/types.Durar.js";
+import type { DurarConfig } from "../../config/types.durar.js";
 import {
   collectAllowlistProviderGroupPolicyWarnings,
   collectAllowlistProviderRestrictSendersWarnings,

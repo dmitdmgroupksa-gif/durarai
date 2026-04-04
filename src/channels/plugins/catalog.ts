@@ -1,7 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { MANIFEST_KEY } from "../../compat/legacy-names.js";
-import { resolveDurarPackageRootSync } from "../../infra/Durar-root.js";
+import { resolveDurarPackageRootSync } from "../../infra/durar-root.js";
 import { resolveBundledPluginsDir } from "../../plugins/bundled-dir.js";
 import { discoverDurarPlugins } from "../../plugins/discovery.js";
 import { loadPluginManifest } from "../../plugins/manifest.js";

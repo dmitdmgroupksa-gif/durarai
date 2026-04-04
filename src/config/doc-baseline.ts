@@ -2,7 +2,7 @@ import fsSync from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { resolveDurarPackageRootSync } from "../infra/Durar-root.js";
+import { resolveDurarPackageRootSync } from "../infra/durar-root.js";
 import { loadPluginManifestRegistry } from "../plugins/manifest-registry.js";
 import {
   collectChannelSchemaMetadata,

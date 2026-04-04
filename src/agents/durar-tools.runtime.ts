@@ -1,1 +1,1 @@
-export { createDurarTools } from "./Durar-tools.js";
+export { createDurarTools } from "./durar-tools.js";

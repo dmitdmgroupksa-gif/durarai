@@ -262,7 +262,7 @@ vi.mock("../process/exec.js", () => ({
   runCommandWithTimeout,
 }));
 
-vi.mock("../infra/Durar-root.js", () => ({
+vi.mock("../infra/durar-root.js", () => ({
   resolveDurarPackageRoot,
 }));
 

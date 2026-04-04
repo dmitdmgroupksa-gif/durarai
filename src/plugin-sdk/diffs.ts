@@ -3,7 +3,7 @@
 
 export { definePluginEntry } from "./plugin-entry.js";
 export type { DurarConfig } from "../config/config.js";
-export { resolvePreferredDurarTmpDir } from "../infra/tmp-Durar-dir.js";
+export { resolvePreferredDurarTmpDir } from "../infra/tmp-durar-dir.js";
 export type {
   AnyAgentTool,
   DurarPluginApi,

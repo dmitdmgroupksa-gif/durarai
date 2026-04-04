@@ -32,7 +32,7 @@ vi.mock("../../config/sessions.js", () => ({
   },
 }));
 
-vi.mock("../../infra/Durar-root.js", () => ({
+vi.mock("../../infra/durar-root.js", () => ({
   resolveDurarPackageRoot: async () => "/tmp/Durar",
 }));
 

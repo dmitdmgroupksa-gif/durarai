@@ -1,6 +1,6 @@
 import { loadConfig } from "../../config/config.js";
 import { extractDeliveryInfo } from "../../config/sessions.js";
-import { resolveDurarPackageRoot } from "../../infra/Durar-root.js";
+import { resolveDurarPackageRoot } from "../../infra/durar-root.js";
 import {
   formatDoctorNonInteractiveHint,
   type RestartSentinelPayload,

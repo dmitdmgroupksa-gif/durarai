@@ -410,7 +410,7 @@ vi.mock("../gateway/session-utils.js", async (importOriginal) => {
     ...actual,
   };
 });
-vi.mock("../infra/Durar-root.js", () => ({
+vi.mock("../infra/durar-root.js", () => ({
   resolveDurarPackageRoot: vi.fn().mockResolvedValue("/tmp/Durar"),
 }));
 vi.mock("../infra/os-summary.js", () => ({

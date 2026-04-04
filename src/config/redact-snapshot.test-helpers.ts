@@ -1,7 +1,7 @@
 import { expect } from "vitest";
 import { restoreRedactedValues as restoreRedactedValues_orig } from "./redact-snapshot.js";
 import type { ConfigUiHints } from "./schema.js";
-import type { ConfigFileSnapshot } from "./types.Durar.js";
+import type { ConfigFileSnapshot } from "./types.durar.js";
 
 export type TestSnapshot<TConfig extends Record<string, unknown>> = ConfigFileSnapshot & {
   parsed: TConfig;

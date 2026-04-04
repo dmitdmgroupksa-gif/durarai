@@ -5,7 +5,7 @@ import { clearPluginDiscoveryCache } from "../plugins/discovery.js";
 import { clearPluginLoaderCache } from "../plugins/loader.js";
 import { clearPluginManifestRegistryCache } from "../plugins/manifest-registry.js";
 import { resetPluginRuntimeStateForTest } from "../plugins/runtime.js";
-import { createDurarTools } from "./Durar-tools.js";
+import { createDurarTools } from "./durar-tools.js";
 
 function resetPluginState() {
   clearPluginLoaderCache();

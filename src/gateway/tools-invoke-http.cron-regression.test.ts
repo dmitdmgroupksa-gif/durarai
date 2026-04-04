@@ -47,7 +47,7 @@ vi.mock("../plugins/tools.js", () => ({
   getPluginToolMeta: noPluginToolMeta,
 }));
 
-vi.mock("../agents/Durar-tools.js", () => {
+vi.mock("../agents/durar-tools.js", () => {
   const tools = [
     {
       name: "cron",

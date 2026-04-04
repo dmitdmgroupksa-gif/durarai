@@ -4,7 +4,7 @@ import os from "node:os";
 import path from "node:path";
 import { resolveBoundaryPath } from "../../infra/boundary-path.js";
 import { parseSshTarget } from "../../infra/ssh-tunnel.js";
-import { resolvePreferredDurarTmpDir } from "../../infra/tmp-Durar-dir.js";
+import { resolvePreferredDurarTmpDir } from "../../infra/tmp-durar-dir.js";
 import { resolveUserPath } from "../../utils.js";
 import type { SandboxBackendCommandResult } from "./backend.js";
 import { sanitizeEnvVars } from "./sanitize-env-vars.js";

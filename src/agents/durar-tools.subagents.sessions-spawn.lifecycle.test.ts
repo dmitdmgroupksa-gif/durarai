@@ -12,7 +12,7 @@ import {
   setSessionsSpawnHookRunnerOverride,
   setupSessionsSpawnGatewayMock,
   setSessionsSpawnConfigOverride,
-} from "./Durar-tools.subagents.sessions-spawn.test-harness.js";
+} from "./durar-tools.subagents.sessions-spawn.test-harness.js";
 import { resolveRequesterStoreKey } from "./subagent-announce-delivery.js";
 import { resetSubagentRegistryForTests } from "./subagent-registry.js";
 

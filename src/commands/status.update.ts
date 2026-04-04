@@ -1,5 +1,5 @@
 import { formatCliCommand } from "../cli/command-format.js";
-import { resolveDurarPackageRoot } from "../infra/Durar-root.js";
+import { resolveDurarPackageRoot } from "../infra/durar-root.js";
 import {
   checkUpdateStatus,
   compareSemverStrings,

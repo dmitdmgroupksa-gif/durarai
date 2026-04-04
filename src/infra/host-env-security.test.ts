@@ -11,7 +11,7 @@ import {
   sanitizeHostExecEnvWithDiagnostics,
   sanitizeSystemRunEnvOverrides,
 } from "./host-env-security.js";
-import { Durar_CLI_ENV_VALUE } from "./Durar-exec-env.js";
+import { Durar_CLI_ENV_VALUE } from "./durar-exec-env.js";
 
 function findSystemCommandPath(command: string) {
   if (process.platform === "win32") {
