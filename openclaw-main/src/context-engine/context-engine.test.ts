@@ -1,7 +1,7 @@
 import type { AgentMessage } from "@mariozechner/pi-agent-core";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { compactEmbeddedPiSessionDirect } from "../agents/pi-embedded-runner/compact.runtime.js";
-import type { DurarConfig } from "../config/types.Durar.js";
+import type { DurarConfig } from "../config/types.durar.js";
 // ---------------------------------------------------------------------------
 // We dynamically import the registry so we can get a fresh module per test
 // group when needed.  For most groups we use the shared singleton directly.
@@ -896,3 +896,4 @@ describe("Bundle chunk isolation (#40096)", () => {
     }
   });
 });
+

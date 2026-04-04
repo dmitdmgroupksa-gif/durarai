@@ -1,4 +1,4 @@
-﻿import type { SecretInput } from "./types.secrets.js";
+import type { SecretInput } from "./types.secrets.js";
 
 export type GatewayBindMode = "auto" | "lan" | "loopback" | "custom" | "tailnet";
 
@@ -124,7 +124,7 @@ export type GatewayAuthMode = "none" | "token" | "password" | "trusted-proxy";
 
 /**
  * Configuration for trusted reverse proxy authentication.
- * Used when Clawdbot runs behind an identity-aware proxy (Pomerium, Caddy + OAuth, etc.)
+ * Used when Durar runs behind an identity-aware proxy (Pomerium, Caddy + OAuth, etc.)
  * that handles authentication and passes user identity via headers.
  */
 export type GatewayTrustedProxyConfig = {

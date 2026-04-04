@@ -19,7 +19,7 @@ import {
 import { loadGatewayRuntimeConfigSchema } from "../../config/runtime-schema.js";
 import { lookupConfigSchema, type ConfigSchemaResponse } from "../../config/schema.js";
 import { extractDeliveryInfo } from "../../config/sessions.js";
-import type { ConfigValidationIssue, DurarConfig } from "../../config/types.Durar.js";
+import type { ConfigValidationIssue, DurarConfig } from "../../config/types.durar.js";
 import {
   formatDoctorNonInteractiveHint,
   type RestartSentinelPayload,
@@ -627,3 +627,4 @@ export const configHandlers: GatewayRequestHandlers = {
     }
   },
 };
+

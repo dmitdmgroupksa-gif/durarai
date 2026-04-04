@@ -1,4 +1,4 @@
-﻿import type { DurarConfig } from "../../config/config.js";
+import type { DurarConfig } from "../../config/config.js";
 import { normalizeResolvedSecretInputString } from "../../config/types.secrets.js";
 import {
   isDangerousHostEnvOverrideVarName,

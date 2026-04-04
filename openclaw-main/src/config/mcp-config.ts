@@ -1,6 +1,6 @@
 import { readSourceConfigSnapshot } from "./io.js";
 import { replaceConfigFile } from "./mutate.js";
-import type { DurarConfig } from "./types.Durar.js";
+import type { DurarConfig } from "./types.durar.js";
 import { validateConfigObjectWithPlugins } from "./validation.js";
 
 export type ConfigMcpServers = Record<string, Record<string, unknown>>;
@@ -163,3 +163,4 @@ export async function unsetConfiguredMcpServer(params: {
     removed: true,
   };
 }
+

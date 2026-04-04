@@ -2,9 +2,16 @@
 set -euo pipefail
 
 # Ensure node is in PATH on Windows (Git Bash / WSL)
-NODE_DIR="/mnt/c/Program Files/nodejs"
-if [[ -d "$NODE_DIR" ]] && [[ ":$PATH:" != *":$NODE_DIR:"* ]]; then
-  export PATH="$NODE_DIR:$PATH"
+if [[ "$OSTYPE" == "msys" || "$OSTYPE" == "win32" ]]; then
+  NODE_DIR="/c/Program Files/nodejs"
+  if [[ -d "$NODE_DIR" ]] && [[ ":$PATH:" != *":$NODE_DIR:"* ]]; then
+    export PATH="$NODE_DIR:$PATH"
+  fi
+elif [[ -d "/mnt/c/Program Files/nodejs" ]]; then
+  NODE_DIR="/mnt/c/Program Files/nodejs"
+  if [[ ":$PATH:" != *":$NODE_DIR:"* ]]; then
+    export PATH="$NODE_DIR:$PATH"
+  fi
 fi
 
 on_error() {

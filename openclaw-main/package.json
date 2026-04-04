@@ -1,6 +1,6 @@
 {
-  "name": "durar",
-  "version": "2026.4.2",
+  "name": "durar-cli",
+  "version": "2026.4.3",
   "description": "Multi-channel AI gateway with extensible messaging integrations",
   "keywords": [],
   "homepage": "https://github.com/dmitdmgroupksa-gif/durarai#readme",
@@ -546,6 +546,18 @@
     "./plugin-sdk/reply-history": {
       "types": "./dist/plugin-sdk/reply-history.d.ts",
       "default": "./dist/plugin-sdk/reply-history.js"
+    },
+    "./plugin-sdk/reply-reference": {
+      "types": "./dist/plugin-sdk/reply-reference.d.ts",
+      "default": "./dist/plugin-sdk/reply-reference.js"
+    },
+    "./plugin-sdk/outbound-media": {
+      "types": "./dist/plugin-sdk/outbound-media.d.ts",
+      "default": "./dist/plugin-sdk/outbound-media.js"
+    },
+    "./plugin-sdk/ssrf-policy": {
+      "types": "./dist/plugin-sdk/ssrf-policy.d.ts",
+      "default": "./dist/plugin-sdk/ssrf-policy.js"
     },
     "./plugin-sdk/media-understanding": {
       "types": "./dist/plugin-sdk/media-understanding.d.ts",
@@ -1147,6 +1159,7 @@
     "test:all": "pnpm lint && pnpm build && pnpm test && pnpm test:e2e && pnpm test:live && pnpm test:docker:all",
     "test:auth:compat": "vitest run --config vitest.gateway.config.ts src/gateway/server.auth.compat-baseline.test.ts src/gateway/client.test.ts src/gateway/reconnect-gating.test.ts src/gateway/protocol/connect-error-details.test.ts",
     "test:build:singleton": "node scripts/test-built-plugin-singleton.mjs",
+    "test:bundled": "vitest run --config vitest.bundled.config.ts",
     "test:changed": "pnpm test -- --changed origin/main",
     "test:changed:max": "node scripts/test-parallel.mjs --profile max --changed origin/main",
     "test:channels": "node scripts/test-parallel.mjs --surface channels",

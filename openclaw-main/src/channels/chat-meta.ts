@@ -91,7 +91,15 @@ function buildChatChannelMetaById(): Record<ChatChannelId, ChatChannelMeta> {
 
   const missingIds = CHAT_CHANNEL_ORDER.filter((id) => !entries.has(id));
   if (missingIds.length > 0) {
-    throw new Error(`Missing bundled chat channel metadata for: ${missingIds.join(", ")}`);
+    // In published builds, all bundled plugin metadata is included. In local
+    // dev/source checkouts, the metadata may not be available yet. Return
+    // what we have rather than throwing, so CLI help and other fast paths
+    // can still work without the full plugin tree loaded.
+    // eslint-disable-next-line no-console
+    console.warn(
+      `[Durar] Missing bundled chat channel metadata for: ${missingIds.join(", ")} (dev mode, returning partial)`,
+    );
+    return Object.freeze(Object.fromEntries(entries)) as Record<ChatChannelId, ChatChannelMeta>;
   }
 
   return Object.freeze(Object.fromEntries(entries)) as Record<ChatChannelId, ChatChannelMeta>;

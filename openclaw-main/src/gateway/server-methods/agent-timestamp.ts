@@ -1,4 +1,4 @@
-﻿import { resolveUserTimezone } from "../../agents/date-time.js";
+import { resolveUserTimezone } from "../../agents/date-time.js";
 import type { DurarConfig } from "../../config/types.js";
 import { formatZonedTimestamp } from "../../infra/format-time/format-datetime.ts";
 

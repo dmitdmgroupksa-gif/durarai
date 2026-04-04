@@ -1,4 +1,4 @@
-﻿import type { Api, Model } from "@mariozechner/pi-ai";
+import type { Api, Model } from "@mariozechner/pi-ai";
 import type { AuthStorage, ModelRegistry } from "@mariozechner/pi-coding-agent";
 import type { DurarConfig } from "../../config/config.js";
 import type { ModelDefinitionConfig } from "../../config/types.js";

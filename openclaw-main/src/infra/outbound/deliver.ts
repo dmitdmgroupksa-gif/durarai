@@ -1,4 +1,4 @@
-﻿import {
+import {
   resolveSendableOutboundReplyParts,
   sendMediaWithLeadingCaption,
 } from "Durar/plugin-sdk/reply-payload";
