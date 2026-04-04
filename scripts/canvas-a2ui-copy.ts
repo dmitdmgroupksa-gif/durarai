@@ -17,7 +17,11 @@ export async function copyA2uiAssets({ srcDir, outDir }: { srcDir: string; outDi
     await fs.stat(path.join(srcDir, "a2ui.bundle.js"));
   } catch (err) {
     const message = 'Missing A2UI bundle assets. Run "pnpm canvas:a2ui:bundle" and retry.';
-    if (skipMissing) {
+    const sourceExportLooksIncomplete = await fs
+      .stat(path.join(srcDir, "index.html"))
+      .then(() => true)
+      .catch(() => false);
+    if (skipMissing || sourceExportLooksIncomplete) {
       console.warn(`${message} Skipping copy (Durar_A2UI_SKIP_MISSING=1).`);
       return;
     }

@@ -309,6 +309,7 @@ export function stageBundledPluginRuntimeDeps(params = {}) {
   const installPluginRuntimeDepsImpl =
     params.installPluginRuntimeDepsImpl ?? installPluginRuntimeDeps;
   const installAttempts = params.installAttempts ?? 3;
+  const warn = params.warn ?? console.warn;
   for (const pluginDir of listBundledPluginRuntimeDirs(repoRoot)) {
     const pluginId = path.basename(pluginDir);
     const packageJson = sanitizeBundledManifestForRuntimeInstall(pluginDir);
@@ -324,17 +325,27 @@ export function stageBundledPluginRuntimeDeps(params = {}) {
     if (fs.existsSync(nodeModulesDir) && stamp?.fingerprint === fingerprint) {
       continue;
     }
-    installPluginRuntimeDepsWithRetries({
-      attempts: installAttempts,
-      install: installPluginRuntimeDepsImpl,
-      installParams: {
-        fingerprint,
-        packageJson,
-        pluginDir,
-        pluginId,
-        repoRoot,
-      },
-    });
+    try {
+      installPluginRuntimeDepsWithRetries({
+        attempts: installAttempts,
+        install: installPluginRuntimeDepsImpl,
+        installParams: {
+          fingerprint,
+          packageJson,
+          pluginDir,
+          pluginId,
+          repoRoot,
+        },
+      });
+    } catch (error) {
+      removePathIfExists(nodeModulesDir);
+      removePathIfExists(stampPath);
+      const message = error instanceof Error ? error.message : String(error);
+      warn(
+        `[runtime-postbuild] failed to stage runtime deps for bundled plugin ${pluginId}; ` +
+          `continuing without staged deps (${message})`,
+      );
+    }
   }
 }
 

@@ -10,6 +10,7 @@ const extraArgs = process.argv.slice(2);
 const INEFFECTIVE_DYNAMIC_IMPORT_RE = /\[INEFFECTIVE_DYNAMIC_IMPORT\]/;
 const UNRESOLVED_IMPORT_RE = /\[UNRESOLVED_IMPORT\]/;
 const ANSI_ESCAPE_RE = new RegExp(String.raw`\u001B\[[0-9;]*m`, "g");
+const pnpmCommand = process.platform === "win32" ? "pnpm.cmd" : "pnpm";
 
 function removeDistPluginNodeModulesSymlinks(rootDir) {
   const extensionsDir = path.join(rootDir, "extensions");
@@ -61,15 +62,17 @@ function findFatalUnresolvedImport(lines) {
   return null;
 }
 
-const result = spawnSync(
-  "pnpm",
-  ["exec", "tsdown", "--config-loader", "unrun", "--logLevel", logLevel, ...extraArgs],
-  {
-    encoding: "utf8",
-    stdio: "pipe",
-    shell: process.platform === "win32",
-  },
-);
+const command = process.platform === "win32" ? "cmd.exe" : pnpmCommand;
+const args =
+  process.platform === "win32"
+    ? ["/d", "/s", "/c", "pnpm.cmd", "exec", "tsdown", "--config-loader", "unrun", "--logLevel", logLevel, ...extraArgs]
+    : ["exec", "tsdown", "--config-loader", "unrun", "--logLevel", logLevel, ...extraArgs];
+
+const result = spawnSync(command, args, {
+  encoding: "utf8",
+  stdio: "pipe",
+  shell: false,
+});
 
 const stdout = result.stdout ?? "";
 const stderr = result.stderr ?? "";

@@ -319,6 +319,8 @@ function Cleanup-NpmDurarPaths {
     $npmPrefix = npm config get prefix 2>$null
     if ($npmPrefix) {
         $stalePaths = @(
+            "$npmPrefix\node_modules\Durar",
+            "$npmPrefix\node_modules\.cache\Durar",
             "$npmPrefix\node_modules\durar-cli",
             "$npmPrefix\node_modules\.cache\durar-cli"
         )
@@ -410,7 +412,7 @@ function Resolve-PackageInstallSpec {
 
     $trimmed = $Target.Trim()
     if ([string]::IsNullOrWhiteSpace($trimmed)) {
-        return "durar-cli@latest"
+        return "Durar@latest"
     }
     if ($trimmed.ToLowerInvariant() -eq "main") {
         return "github:dmitdmgroupksa-gif/durarai#main"
@@ -418,7 +420,7 @@ function Resolve-PackageInstallSpec {
     if (Test-ExplicitPackageInstallSpec -Target $trimmed) {
         return $trimmed
     }
-    return "durar-cli@$trimmed"
+    return "Durar@$trimmed"
 }
 
 function Add-ToPath {

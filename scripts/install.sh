@@ -1183,7 +1183,7 @@ detect_Durar_checkout() {
     if [[ ! -f "$dir/pnpm-workspace.yaml" ]]; then
         return 1
     fi
-    if ! grep -q '"name"[[:space:]]*:[[:space:]]*"durar-cli"' "$dir/package.json" 2>/dev/null; then
+    if ! grep -Eq '"name"[[:space:]]*:[[:space:]]*"(Durar|durar-cli)"' "$dir/package.json" 2>/dev/null; then
         return 1
     fi
     echo "$dir"
@@ -1980,14 +1980,14 @@ resolve_package_install_spec() {
 }
 
 install_Durar() {
-    local package_name="durar-cli"
+    local package_name="Durar"
     if [[ "$USE_BETA" == "1" ]]; then
         local beta_version=""
         beta_version="$(resolve_beta_version || true)"
         if [[ -n "$beta_version" ]]; then
             Durar_VERSION="$beta_version"
             ui_info "Beta tag detected (${beta_version})"
-            package_name="durar-cli"
+            package_name="Durar"
         else
             Durar_VERSION="latest"
             ui_info "No beta tag found; using latest"
@@ -2016,11 +2016,11 @@ install_Durar() {
         install_Durar_npm "${install_spec}"
     fi
 
-    if [[ "${Durar_VERSION}" == "latest" && "${package_name}" == "durar-cli" ]]; then
+    if [[ "${Durar_VERSION}" == "latest" && "${package_name}" == "Durar" ]]; then
         if ! resolve_Durar_bin &> /dev/null; then
-            ui_warn "npm install durar-cli@latest failed; retrying durar-cli@next"
+            ui_warn "npm install Durar@latest failed; retrying Durar@next"
             cleanup_npm_Durar_paths
-            install_Durar_npm "durar-cli@next"
+            install_Durar_npm "Durar@next"
         fi
     fi
 

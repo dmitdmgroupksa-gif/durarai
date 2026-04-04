@@ -625,6 +625,27 @@ function recordPluginError(params: {
       ? "deprecated api.registerHttpHandler(...) was removed; use api.registerHttpRoute(...) for plugin-owned routes or registerPluginHttpRoute(...) for dynamic lifecycle routes"
       : null;
   const displayError = deprecatedApiHint ? `${deprecatedApiHint} (${errorText})` : errorText;
+  const isBundledMissingRuntimeDep =
+    params.origin === "bundled" &&
+    (displayError.includes("Cannot find module ") ||
+      displayError.includes("ERR_MODULE_NOT_FOUND") ||
+      displayError.includes("Module not found"));
+  if (isBundledMissingRuntimeDep) {
+    const warningMessage = `runtime dependency missing; disabling bundled plugin (${displayError})`;
+    params.logger.warn(`${params.logPrefix}${warningMessage}`);
+    params.record.status = "disabled";
+    params.record.enabled = false;
+    params.record.error = warningMessage;
+    params.registry.plugins.push(params.record);
+    params.seenIds.set(params.pluginId, params.origin);
+    params.registry.diagnostics.push({
+      level: "warn",
+      pluginId: params.record.id,
+      source: params.record.source,
+      message: `${params.diagnosticMessagePrefix}${warningMessage}`,
+    });
+    return;
+  }
   params.logger.error(`${params.logPrefix}${displayError}`);
   params.record.status = "error";
   params.record.error = displayError;

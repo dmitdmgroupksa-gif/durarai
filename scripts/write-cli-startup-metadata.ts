@@ -97,16 +97,28 @@ async function captureStdout(action: () => void | Promise<void>): Promise<string
 export async function renderBundledRootHelpText(
   distDirOverride: string = distDir,
 ): Promise<string> {
-  const bundleName = readdirSync(distDirOverride).find(
-    (entry) => entry.startsWith("root-help-") && entry.endsWith(".js"),
-  );
-  if (!bundleName) {
+  const directCandidates = [
+    path.join(distDirOverride, "cli", "program", "root-help.js"),
+    path.join(distDirOverride, "cli", "program", "root-help.mjs"),
+  ];
+  const discoveredDirect = directCandidates.find((candidate) => {
+    try {
+      return readFileSync(candidate, "utf8").length > 0;
+    } catch {
+      return false;
+    }
+  });
+  const hashedCandidate = readdirSync(distDirOverride)
+    .find((entry) => entry.startsWith("root-help-") && entry.endsWith(".js"));
+  const bundlePath =
+    discoveredDirect ?? (hashedCandidate ? path.join(distDirOverride, hashedCandidate) : null);
+  if (!bundlePath) {
     throw new Error("No root-help bundle found in dist; cannot write CLI startup metadata.");
   }
-  const moduleUrl = pathToFileURL(path.join(distDirOverride, bundleName)).href;
+  const moduleUrl = pathToFileURL(bundlePath).href;
   const mod = (await import(moduleUrl)) as { outputRootHelp?: () => void | Promise<void> };
   if (typeof mod.outputRootHelp !== "function") {
-    throw new Error(`Bundle ${bundleName} does not export outputRootHelp.`);
+    throw new Error(`Bundle ${path.basename(bundlePath)} does not export outputRootHelp.`);
   }
 
   return captureStdout(async () => {

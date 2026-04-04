@@ -141,6 +141,25 @@ function recordCapabilityLoadError(
   record: PluginRecord,
   message: string,
 ): void {
+  const isMissingRuntimeDep =
+    message.includes("Cannot find module ") ||
+    message.includes("ERR_MODULE_NOT_FOUND") ||
+    message.includes("Module not found");
+  if (isMissingRuntimeDep) {
+    const warningMessage = `runtime dependency missing; disabling bundled plugin (${message})`;
+    record.status = "disabled";
+    record.enabled = false;
+    record.error = warningMessage;
+    registry.plugins.push(record);
+    registry.diagnostics.push({
+      level: "warn",
+      pluginId: record.id,
+      source: record.source,
+      message: `failed to load plugin: ${warningMessage}`,
+    });
+    log.warn(`[plugins] ${record.id} failed to load from ${record.source}: ${warningMessage}`);
+    return;
+  }
   record.status = "error";
   record.error = message;
   registry.plugins.push(record);
