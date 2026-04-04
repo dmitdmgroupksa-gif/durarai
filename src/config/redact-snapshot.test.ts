@@ -8,7 +8,7 @@ import {
 } from "./redact-snapshot.test-helpers.js";
 import { redactSnapshotTestHints as mainSchemaHints } from "./redact-snapshot.test-hints.js";
 import { buildConfigSchema, type ConfigUiHints } from "./schema.js";
-import type { ConfigFileSnapshot } from "./types.Durar.js";
+import type { ConfigFileSnapshot } from "./types.durar.js";
 
 function expectNestedLevelPairValue(
   source: Record<string, Record<string, Record<string, unknown>>>,
@@ -979,3 +979,4 @@ describe("redactConfigSnapshot", () => {
     expect(channels.slack.accounts[1].botToken).toBe(REDACTED_SENTINEL);
   });
 });
+

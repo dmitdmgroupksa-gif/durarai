@@ -3,7 +3,7 @@ import os from "node:os";
 import path from "node:path";
 import { Command } from "commander";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import type { DurarConfig, ConfigFileSnapshot } from "../config/types.Durar.js";
+import type { DurarConfig, ConfigFileSnapshot } from "../config/types.durar.js";
 import type { UpdateRunResult } from "../infra/update-runner.js";
 import { BUNDLED_RUNTIME_SIDECAR_PATHS } from "../plugins/public-artifacts.js";
 import { withEnvAsync } from "../test-utils/env.js";
@@ -1212,3 +1212,4 @@ describe("update-cli", () => {
     homedirSpy.mockRestore();
   });
 });
+
