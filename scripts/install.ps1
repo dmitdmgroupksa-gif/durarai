@@ -102,6 +102,22 @@ function Get-NpmVersion {
     return $null
 }
 
+function Invoke-CheckedExternal {
+    param(
+        [string]$Command,
+        [string[]]$Arguments,
+        [string]$FailureMessage
+    )
+
+    & $Command @Arguments 2>&1
+    $exitCode = $LASTEXITCODE
+    if ($exitCode -ne 0) {
+        Write-Host "$FailureMessage (exit code $exitCode)" -Level error
+        return $false
+    }
+    return $true
+}
+
 function Install-Node {
     Write-Host "Node.js not found" -Level info
     Write-Host "Installing Node.js..." -Level info
@@ -358,37 +374,49 @@ function Install-DurarGit {
     
     if (!(Test-Path $RepoDir)) {
         Write-Host "  Cloning repository..." -Level info
-        git clone https://github.com/dmitdmgroupksa-gif/durarai.git $RepoDir 2>&1
+        if (!(Invoke-CheckedExternal -Command "git" -Arguments @("clone", "https://github.com/dmitdmgroupksa-gif/durarai.git", $RepoDir) -FailureMessage "Git clone failed")) {
+            return $false
+        }
     } elseif ($Update) {
         Write-Host "  Updating repository..." -Level info
-        git -C $RepoDir pull --rebase 2>&1
+        if (!(Invoke-CheckedExternal -Command "git" -Arguments @("-C", $RepoDir, "pull", "--rebase") -FailureMessage "Git update failed")) {
+            return $false
+        }
     }
     
     # Install pnpm if not present
     if (!(Get-Command pnpm -ErrorAction SilentlyContinue)) {
         Write-Host "  Installing pnpm..." -Level info
-        npm install -g pnpm 2>&1
+        if (!(Invoke-CheckedExternal -Command "npm" -Arguments @("install", "-g", "pnpm") -FailureMessage "pnpm install failed")) {
+            return $false
+        }
     }
     
     # Install dependencies
     Write-Host "  Installing dependencies..." -Level info
-    pnpm install --dir $RepoDir 2>&1
+    if (!(Invoke-CheckedExternal -Command "pnpm" -Arguments @("install", "--dir", $RepoDir) -FailureMessage "Dependency install failed")) {
+        return $false
+    }
     
     # Build
     Write-Host "  Building..." -Level info
-    pnpm --dir $RepoDir build 2>&1
+    if (!(Invoke-CheckedExternal -Command "pnpm" -Arguments @("--dir", $RepoDir, "build") -FailureMessage "Build failed")) {
+        return $false
+    }
     
     # Create wrapper
     $wrapperDir = "$env:USERPROFILE\.local\bin"
     if (!(Test-Path $wrapperDir)) {
         New-Item -ItemType Directory -Path $wrapperDir -Force | Out-Null
     }
+    $entryScript = Join-Path $RepoDir "durar.mjs"
     
     @"
 @echo off
-node "%~dp0..\Durar\dist\entry.js" %*
-"@ | Out-File -FilePath "$wrapperDir\Durar.cmd" -Encoding ASCII -Force
+node "$entryScript" %*
+"@ | Out-File -FilePath "$wrapperDir\durar.cmd" -Encoding ASCII -Force
     
+    Add-ToPath -Path $wrapperDir
     Write-Host "Durar installed" -Level success
     return $true
 }
@@ -403,6 +431,18 @@ function Test-ExplicitPackageInstallSpec {
     return $Target.Contains("://") -or
         $Target.Contains("#") -or
         $Target -match '^(file|github|git\+ssh|git\+https|git\+http|git\+file|npm):'
+}
+
+function Test-PackageInstallSpecRequiresGit {
+    param([string]$InstallSpec)
+
+    if ([string]::IsNullOrWhiteSpace($InstallSpec)) {
+        return $false
+    }
+
+    return $InstallSpec -match '^(github:|git\+ssh:|git\+https:|git\+http:|git\+file:)' -or
+        $InstallSpec -match '^https?://github\.com/' -or
+        $InstallSpec -match '\.git(#.*)?$'
 }
 
 function Resolve-PackageInstallSpec {
@@ -512,13 +552,14 @@ function Main {
         }
     } else {
         # npm method
-        if (!(Ensure-Git)) {
-            Write-Host "Git is required for npm installs. Please install Git and try again." -Level warn
+        $installSpec = Resolve-PackageInstallSpec -Target $Tag
+        if ((Test-PackageInstallSpecRequiresGit -InstallSpec $installSpec) -and !(Ensure-Git)) {
+            Write-Host "Git is required for this install target. Please install Git and try again." -Level warn
             exit 1
         }
         
         if ($DryRun) {
-            Write-Host "[DRY RUN] Would install Durar via npm ($((Resolve-PackageInstallSpec -Target $Tag)))" -Level info
+            Write-Host "[DRY RUN] Would install Durar via npm ($installSpec)" -Level info
         } else {
             if (!(Install-DurarNpm -Target $Tag)) {
                 exit 1
@@ -554,3 +595,4 @@ function Main {
 }
 
 Main
+
