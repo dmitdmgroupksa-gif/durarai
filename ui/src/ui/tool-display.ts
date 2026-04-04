@@ -1,4 +1,4 @@
-import SHARED_TOOL_DISPLAY_JSON from "../../../apps/shared/DurarKit/Sources/DurarKit/Resources/tool-display.json" with { type: "json" };
+import SHARED_TOOL_DISPLAY_JSON from "../../../apps/shared/durarKit/Sources/durarKit/Resources/tool-display.json" with { type: "json" };
 import {
   defaultTitle,
   formatToolDetailText,
