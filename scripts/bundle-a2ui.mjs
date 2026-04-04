@@ -75,7 +75,11 @@ const computeHash = async () => {
 
 const run = (command, args) =>
   new Promise((resolve, reject) => {
-    const child = spawn(command, args, {
+    const isWindows = process.platform === "win32";
+    const useCmdWrapper = isWindows && command.toLowerCase().endsWith(".cmd");
+    const spawnCommand = useCmdWrapper ? "cmd.exe" : command;
+    const spawnArgs = useCmdWrapper ? ["/d", "/s", "/c", command, ...args] : args;
+    const child = spawn(spawnCommand, spawnArgs, {
       cwd: rootDir,
       stdio: "inherit",
       shell: false,
