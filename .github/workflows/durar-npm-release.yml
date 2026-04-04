@@ -70,16 +70,16 @@ jobs:
           set -euo pipefail
           PACKAGE_VERSION=$(node -p "require('./package.json').version")
 
-          if npm view "Durar@${PACKAGE_VERSION}" version >/dev/null 2>&1; then
+          if npm view "durar@${PACKAGE_VERSION}" version >/dev/null 2>&1; then
             if [[ "${PREFLIGHT_ONLY}" == "true" ]]; then
-              echo "Durar@${PACKAGE_VERSION} is already published on npm; continuing because preflight_only=true."
+              echo "durar@${PACKAGE_VERSION} is already published on npm; continuing because preflight_only=true."
               exit 0
             fi
-            echo "Durar@${PACKAGE_VERSION} is already published on npm."
+            echo "durar@${PACKAGE_VERSION} is already published on npm."
             exit 1
           fi
 
-          echo "Publishing Durar@${PACKAGE_VERSION}"
+          echo "Publishing durar@${PACKAGE_VERSION}"
 
       - name: Check
         env:
@@ -206,12 +206,12 @@ jobs:
           set -euo pipefail
           PACKAGE_VERSION=$(node -p "require('./package.json').version")
 
-          if npm view "Durar@${PACKAGE_VERSION}" version >/dev/null 2>&1; then
-            echo "Durar@${PACKAGE_VERSION} is already published on npm."
+          if npm view "durar@${PACKAGE_VERSION}" version >/dev/null 2>&1; then
+            echo "durar@${PACKAGE_VERSION} is already published on npm."
             exit 1
           fi
 
-          echo "Publishing Durar@${PACKAGE_VERSION}"
+          echo "Publishing durar@${PACKAGE_VERSION}"
 
       - name: Verify preflight run metadata
         env:

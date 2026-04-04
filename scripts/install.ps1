@@ -412,7 +412,7 @@ function Resolve-PackageInstallSpec {
 
     $trimmed = $Target.Trim()
     if ([string]::IsNullOrWhiteSpace($trimmed)) {
-        return "Durar@latest"
+        return "durar@latest"
     }
     if ($trimmed.ToLowerInvariant() -eq "main") {
         return "github:dmitdmgroupksa-gif/durarai#main"
@@ -420,7 +420,7 @@ function Resolve-PackageInstallSpec {
     if (Test-ExplicitPackageInstallSpec -Target $trimmed) {
         return $trimmed
     }
-    return "Durar@$trimmed"
+    return "durar@$trimmed"
 }
 
 function Add-ToPath {

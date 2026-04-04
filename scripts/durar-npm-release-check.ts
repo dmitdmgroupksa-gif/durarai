@@ -143,8 +143,8 @@ export function collectReleasePackageMetadataErrors(pkg: PackageJson): string[] 
   );
   const errors: string[] = [];
 
-  if (pkg.name !== "Durar") {
-    errors.push(`package.json name must be "Durar"; found "${pkg.name ?? ""}".`);
+  if (pkg.name !== "durar") {
+    errors.push(`package.json name must be "durar"; found "${pkg.name ?? ""}".`);
   }
   if (!pkg.description?.trim()) {
     errors.push("package.json description must be non-empty.");
@@ -159,10 +159,8 @@ export function collectReleasePackageMetadataErrors(pkg: PackageJson): string[] 
       }.`,
     );
   }
-  if (pkg.bin?.Durar !== "Durar.mjs") {
-    errors.push(
-      `package.json bin.Durar must be "Durar.mjs"; found "${pkg.bin?.Durar ?? ""}".`,
-    );
+  if (pkg.bin?.durar !== "durar.mjs") {
+    errors.push(`package.json bin.durar must be "durar.mjs"; found "${pkg.bin?.durar ?? ""}".`);
   }
   if (pkg.peerDependencies?.["node-llama-cpp"] !== "3.18.1") {
     errors.push(

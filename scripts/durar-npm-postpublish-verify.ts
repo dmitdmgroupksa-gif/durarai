@@ -24,7 +24,7 @@ export function buildPublishedInstallScenarios(version: string): PublishedInstal
     throw new Error(`Unsupported release version "${version}".`);
   }
 
-  const exactSpec = `Durar@${version}`;
+  const exactSpec = `durar@${version}`;
   const scenarios: PublishedInstallScenario[] = [
     {
       name: "fresh-exact",
@@ -36,7 +36,7 @@ export function buildPublishedInstallScenarios(version: string): PublishedInstal
   if (parsed.channel === "stable" && parsed.correctionNumber !== undefined) {
     scenarios.push({
       name: "upgrade-from-base-stable",
-      installSpecs: [`Durar@${parsed.baseVersion}`, exactSpec],
+      installSpecs: [`durar@${parsed.baseVersion}`, exactSpec],
       expectedVersion: version,
     });
   }
@@ -98,7 +98,7 @@ function verifyScenario(version: string, scenario: PublishedInstallScenario): vo
     }
 
     const globalRoot = resolveGlobalRoot(prefixDir, workingDir);
-    const packageRoot = join(globalRoot, "Durar");
+    const packageRoot = join(globalRoot, "durar");
     const pkg = JSON.parse(
       readFileSync(join(packageRoot, "package.json"), "utf8"),
     ) as InstalledPackageJson;
