@@ -1,0 +1,22 @@
+// Default signing values for shared/repo builds.
+// Auto-selected local team overrides live in .local-signing.xcconfig (git-ignored).
+// Manual local overrides can go in LocalSigning.xcconfig (git-ignored).
+
+#include "Config/Version.xcconfig"
+
+Durar_CODE_SIGN_STYLE = Manual
+Durar_DEVELOPMENT_TEAM = Y5PE65HELJ
+
+Durar_APP_BUNDLE_ID = ai.Durar.client
+Durar_SHARE_BUNDLE_ID = ai.Durar.client.share
+Durar_WATCH_APP_BUNDLE_ID = ai.Durar.client.watchkitapp
+Durar_WATCH_EXTENSION_BUNDLE_ID = ai.Durar.client.watchkitapp.extension
+Durar_ACTIVITY_WIDGET_BUNDLE_ID = ai.Durar.client.activitywidget
+
+Durar_APP_PROFILE = ai.Durar.client Development
+Durar_SHARE_PROFILE = ai.Durar.client.share Development
+
+// Keep local includes after defaults: xcconfig is evaluated top-to-bottom,
+// so later assignments in local files override the defaults above.
+#include? ".local-signing.xcconfig"
+#include? "LocalSigning.xcconfig"

@@ -1,0 +1,54 @@
+# Protect the ownership rules themselves.
+/.github/CODEOWNERS @steipete
+
+# WARNING: GitHub CODEOWNERS uses last-match-wins semantics.
+# If you add overlapping rules below the secops block, include @Durar/secops
+# on those entries too or you can silently remove required secops review.
+# Security-sensitive code, config, and docs require secops review.
+/SECURITY.md @Durar/secops
+/.github/dependabot.yml @Durar/secops
+/.github/codeql/ @Durar/secops
+/.github/workflows/codeql.yml @Durar/secops
+/src/security/ @Durar/secops
+/src/secrets/ @Durar/secops
+/src/config/*secret*.ts @Durar/secops
+/src/config/**/*secret*.ts @Durar/secops
+/src/gateway/*auth*.ts @Durar/secops
+/src/gateway/**/*auth*.ts @Durar/secops
+/src/gateway/*secret*.ts @Durar/secops
+/src/gateway/**/*secret*.ts @Durar/secops
+/src/gateway/security-path*.ts @Durar/secops
+/src/gateway/resolve-configured-secret-input-string*.ts @Durar/secops
+/src/gateway/protocol/**/*secret*.ts @Durar/secops
+/src/gateway/server-methods/secrets*.ts @Durar/secops
+/src/agents/*auth*.ts @Durar/secops
+/src/agents/**/*auth*.ts @Durar/secops
+/src/agents/auth-profiles*.ts @Durar/secops
+/src/agents/auth-health*.ts @Durar/secops
+/src/agents/auth-profiles/ @Durar/secops
+/src/agents/sandbox.ts @Durar/secops
+/src/agents/sandbox-*.ts @Durar/secops
+/src/agents/sandbox/ @Durar/secops
+/src/infra/secret-file*.ts @Durar/secops
+/src/cron/stagger.ts @Durar/secops
+/src/cron/service/jobs.ts @Durar/secops
+/docs/security/ @Durar/secops
+/docs/gateway/authentication.md @Durar/secops
+/docs/gateway/sandbox-vs-tool-policy-vs-elevated.md @Durar/secops
+/docs/gateway/sandboxing.md @Durar/secops
+/docs/gateway/secrets-plan-contract.md @Durar/secops
+/docs/gateway/secrets.md @Durar/secops
+/docs/gateway/security/ @Durar/secops
+/docs/cli/approvals.md @Durar/secops
+/docs/cli/sandbox.md @Durar/secops
+/docs/cli/security.md @Durar/secops
+/docs/cli/secrets.md @Durar/secops
+/docs/reference/secretref-credential-surface.md @Durar/secops
+/docs/reference/secretref-user-supplied-credentials-matrix.json @Durar/secops
+
+# Release workflow and its supporting release-path checks.
+/.github/workflows/Durar-npm-release.yml @Durar/Durar-release-managers
+/docs/reference/RELEASING.md @Durar/Durar-release-managers
+/scripts/Durar-npm-publish.sh @Durar/Durar-release-managers
+/scripts/Durar-npm-release-check.ts @Durar/Durar-release-managers
+/scripts/release-check.ts @Durar/Durar-release-managers

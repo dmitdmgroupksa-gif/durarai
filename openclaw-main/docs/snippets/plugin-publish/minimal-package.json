@@ -1,0 +1,16 @@
+{
+  "name": "@myorg/Durar-my-plugin",
+  "version": "1.0.0",
+  "type": "module",
+  "Durar": {
+    "extensions": ["./index.ts"],
+    "compat": {
+      "pluginApi": ">=2026.3.24-beta.2",
+      "minGatewayVersion": "2026.3.24-beta.2"
+    },
+    "build": {
+      "DurarVersion": "2026.3.24-beta.2",
+      "pluginSdkVersion": "2026.3.24-beta.2"
+    }
+  }
+}

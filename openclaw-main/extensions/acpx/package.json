@@ -1,0 +1,14 @@
+{
+  "name": "@Durar/acpx",
+  "version": "2026.4.1-beta.1",
+  "description": "Durar ACP runtime backend via acpx",
+  "type": "module",
+  "dependencies": {
+    "acpx": "0.4.0"
+  },
+  "Durar": {
+    "extensions": [
+      "./index.ts"
+    ]
+  }
+}

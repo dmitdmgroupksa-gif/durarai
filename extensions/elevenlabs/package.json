@@ -1,0 +1,12 @@
+{
+  "name": "@Durar/elevenlabs-speech",
+  "version": "2026.4.1-beta.1",
+  "private": true,
+  "description": "Durar ElevenLabs speech plugin",
+  "type": "module",
+  "Durar": {
+    "extensions": [
+      "./index.ts"
+    ]
+  }
+}
