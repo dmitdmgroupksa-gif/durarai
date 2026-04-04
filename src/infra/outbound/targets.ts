@@ -1,4 +1,4 @@
-﻿import { mapAllowFromEntries } from "Durar/plugin-sdk/channel-config-helpers";
+import { mapAllowFromEntries } from "Durar/plugin-sdk/channel-config-helpers";
 import { normalizeChatType, type ChatType } from "../../channels/chat-type.js";
 import {
   comparableChannelTargetsShareRoute,
