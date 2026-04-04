@@ -20,7 +20,7 @@ const outputPath = path.join(
   "apps",
   "macos",
   "Sources",
-  "Durar",
+  "durar",
   "HostEnvSecurityPolicy.generated.swift",
 );
 

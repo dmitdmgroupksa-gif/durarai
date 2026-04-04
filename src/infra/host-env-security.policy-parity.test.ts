@@ -25,11 +25,11 @@ describe("host env security policy parity", () => {
     const policyPath = path.join(repoRoot, "src/infra/host-env-security-policy.json");
     const generatedSwiftPath = path.join(
       repoRoot,
-      "apps/macos/Sources/Durar/HostEnvSecurityPolicy.generated.swift",
+      "apps/macos/Sources/durar/HostEnvSecurityPolicy.generated.swift",
     );
     const sanitizerSwiftPath = path.join(
       repoRoot,
-      "apps/macos/Sources/Durar/HostEnvSanitizer.swift",
+      "apps/macos/Sources/durar/HostEnvSanitizer.swift",
     );
 
     const policy = JSON.parse(fs.readFileSync(policyPath, "utf8")) as HostEnvSecurityPolicy;
