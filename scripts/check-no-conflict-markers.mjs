@@ -29,6 +29,7 @@ export function listTrackedFiles(cwd = process.cwd()) {
   const output = execFileSync("git", ["ls-files", "-z"], {
     cwd,
     encoding: "utf8",
+    maxBuffer: 32 * 1024 * 1024,
   });
   return output
     .split("\0")
