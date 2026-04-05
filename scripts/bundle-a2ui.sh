@@ -1,6 +1,17 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+# Windows Git Bash PATH fix - detect node executable
+if [[ -x "/c/Program Files/nodejs/node.exe" ]]; then
+  NODE="/c/Program Files/nodejs/node.exe"
+elif [[ -x "/c/Progra~1/nodejs/node.exe" ]]; then
+  NODE="/c/Progra~1/nodejs/node.exe"
+elif command -v node >/dev/null 2>&1; then
+  NODE="node"
+else
+  NODE="node"
+fi
+
 on_error() {
   echo "A2UI bundling failed. Re-run with: pnpm canvas:a2ui:bundle" >&2
   echo "If this persists, verify pnpm deps and try again." >&2
@@ -36,7 +47,7 @@ INPUT_PATHS=(
 )
 
 compute_hash() {
-  ROOT_DIR="$ROOT_DIR" node --input-type=module --eval '
+  ROOT_DIR="$ROOT_DIR" "$NODE" --input-type=module --eval '
 import { createHash } from "node:crypto";
 import { promises as fs } from "node:fs";
 import path from "node:path";
@@ -93,9 +104,9 @@ pnpm -s exec tsc -p "$A2UI_RENDERER_DIR/tsconfig.json"
 if command -v rolldown >/dev/null 2>&1 && rolldown --version >/dev/null 2>&1; then
   rolldown -c "$A2UI_APP_DIR/rolldown.config.mjs"
 elif [[ -f "$ROOT_DIR/node_modules/.pnpm/node_modules/rolldown/bin/cli.mjs" ]]; then
-  node "$ROOT_DIR/node_modules/.pnpm/node_modules/rolldown/bin/cli.mjs" -c "$A2UI_APP_DIR/rolldown.config.mjs"
+  "$NODE" "$ROOT_DIR/node_modules/.pnpm/node_modules/rolldown/bin/cli.mjs" -c "$A2UI_APP_DIR/rolldown.config.mjs"
 elif [[ -f "$ROOT_DIR/node_modules/.pnpm/rolldown@1.0.0-rc.9/node_modules/rolldown/bin/cli.mjs" ]]; then
-  node "$ROOT_DIR/node_modules/.pnpm/rolldown@1.0.0-rc.9/node_modules/rolldown/bin/cli.mjs" \
+  "$NODE" "$ROOT_DIR/node_modules/.pnpm/rolldown@1.0.0-rc.9/node_modules/rolldown/bin/cli.mjs" \
     -c "$A2UI_APP_DIR/rolldown.config.mjs"
 else
   pnpm -s dlx rolldown -c "$A2UI_APP_DIR/rolldown.config.mjs"
