@@ -13,13 +13,13 @@ param(
 
 $ErrorActionPreference = "Stop"
 
-# Colors
-$ACCENT = "`e[38;2;255;77;77m"    # coral-bright
-$SUCCESS = "`e[38;2;0;229;204m"    # cyan-bright
-$WARN = "`e[38;2;255;176;32m"     # amber
-$ERR_CLR = "`e[38;2;230;57;70m"     # coral-mid
-$MUTED = "`e[38;2;90;100;128m"    # text-muted
-$NC = "`e[0m"                     # No Color
+# Colors (ANSI escapes disabled for compatibility)
+$ACCENT = ""    # no color
+$SUCCESS = ""   # no color
+$WARN = ""      # no color
+$ERR_CLR = ""    # no color
+$MUTED = ""      # no color
+$NC = ""         # No Color (no reset)
 
 function Write-Host {
     param([string]$Message, [string]$Level = "info")
