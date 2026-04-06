@@ -503,21 +503,7 @@ export async function runSetupWizard(
       workspaceDir,
     }));
 
-  if (authChoice === "ollama") {
-    const { openUrl } = await import("../plugins/setup-browser.js");
-    const { setupOllama } = await import("./setup.ollama.js");
-    const ollamaResult = await setupOllama({
-      config: nextConfig,
-      prompter,
-      runtime,
-      openUrl,
-    });
-    if (ollamaResult.status === "configured") {
-      nextConfig = ollamaResult.config;
-    } else {
-      await prompter.note("Ollama setup skipped.", "Ollama");
-    }
-  } else if (authChoice === "custom-api-key") {
+  if (authChoice === "custom-api-key") {
     const customResult = await promptCustomApiConfig({
       prompter,
       runtime,
@@ -525,8 +511,6 @@ export async function runSetupWizard(
       secretInputMode: opts.secretInputMode,
     });
     nextConfig = customResult.config;
-  } else if (authChoice === "skip") {
-    await prompter.note("Skipping model/provider setup.", "Model/provider");
   } else {
     const authResult = await applyAuthChoice({
       authChoice,
@@ -547,7 +531,7 @@ export async function runSetupWizard(
   }
 
   const authChoiceModelSelectionPolicy =
-    authChoice === "custom-api-key" || authChoice === "ollama"
+    authChoice === "custom-api-key"
       ? undefined
       : await resolveAuthChoiceModelSelectionPolicy({
           authChoice,
@@ -557,8 +541,6 @@ export async function runSetupWizard(
         });
   const shouldPromptModelSelection =
     authChoice !== "custom-api-key" &&
-    authChoice !== "ollama" &&
-    authChoice !== "skip" &&
     (authChoiceFromPrompt || authChoiceModelSelectionPolicy?.promptWhenAuthChoiceProvided === true);
   if (shouldPromptModelSelection) {
     const modelSelection = await promptDefaultModel({
