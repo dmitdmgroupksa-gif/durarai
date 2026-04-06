@@ -105,6 +105,13 @@ const ensureSystemdUserLingerInteractive = vi.hoisted(() => vi.fn(async () => {}
 const isSystemdUserServiceAvailable = vi.hoisted(() => vi.fn(async () => true));
 const ensureControlUiAssetsBuilt = vi.hoisted(() => vi.fn(async () => ({ ok: true })));
 const runTui = vi.hoisted(() => vi.fn(async (_options: unknown) => {}));
+const setupOllama = vi.hoisted(() =>
+  vi.fn(async () => ({
+    status: "configured" as const,
+    config: {},
+    model: "ollama/test-model",
+  })),
+);
 const setupWizardShellCompletion = vi.hoisted(() => vi.fn(async () => {}));
 const probeGatewayReachable = vi.hoisted(() => vi.fn(async () => ({ ok: true })));
 const buildPluginCompatibilityNotices = vi.hoisted(() =>
@@ -233,6 +240,14 @@ vi.mock("./setup.finalize.js", () => ({
 
 vi.mock("./setup.completion.js", () => ({
   setupWizardShellCompletion,
+}));
+
+vi.mock("./setup.ollama.js", () => ({
+  setupOllama,
+}));
+
+vi.mock("../plugins/setup-browser.js", () => ({
+  openUrl: vi.fn(async () => {}),
 }));
 
 function createRuntime(opts?: { throwsOnExit?: boolean }): RuntimeEnv {
@@ -439,6 +454,12 @@ describe("runSetupWizard", () => {
 
   it("prompts for a model during explicit interactive Ollama setup", async () => {
     promptDefaultModel.mockClear();
+    setupOllama.mockClear();
+    setupOllama.mockResolvedValueOnce({
+      status: "configured",
+      config: { models: { providers: { ollama: {} } } },
+      model: "ollama/glm-4.7-flash",
+    });
     resolveProviderPluginChoice.mockReturnValue({
       provider: {
         id: "ollama",
@@ -484,11 +505,8 @@ describe("runSetupWizard", () => {
       prompter,
     );
 
-    expect(promptDefaultModel).toHaveBeenCalledWith(
-      expect.objectContaining({
-        allowKeep: false,
-      }),
-    );
+    expect(setupOllama).toHaveBeenCalledOnce();
+    expect(promptDefaultModel).not.toHaveBeenCalled();
   });
 
   it("shows plugin compatibility notices for an existing valid config", async () => {
