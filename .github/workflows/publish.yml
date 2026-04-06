@@ -18,9 +18,7 @@ jobs:
           node-version: '22.x'
           cache: 'pnpm'
       - name: Install dependencies
-        run: pnpm install --no-frozen-lockfile
-        env:
-          FROZEN_LOCKFILE: "false"
+        run: pnpm install
       - name: Build
         run: pnpm build
       - name: Publish to npm
