@@ -17,6 +17,8 @@ jobs:
           cache: 'pnpm'
       - name: Install dependencies
         run: pnpm install --no-frozen-lockfile
+        env:
+          FROZEN_LOCKFILE: "false"
       - name: Build
         run: pnpm build
       - name: Publish to npm
