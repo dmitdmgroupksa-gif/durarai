@@ -515,9 +515,7 @@ export async function runSetupWizard(
     if (ollamaResult.status === "configured") {
       nextConfig = ollamaResult.config;
     } else {
-      await prompter.outro("Ollama setup skipped.");
-      runtime.exit(1);
-      return;
+      await prompter.note("Ollama setup skipped.", "Ollama");
     }
   } else if (authChoice === "custom-api-key") {
     const customResult = await promptCustomApiConfig({

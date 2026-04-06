@@ -2,11 +2,18 @@ import type { OpenClawConfig } from "../config/config.js";
 import type { RuntimeEnv } from "../runtime.js";
 import { fetchWithTimeout } from "../utils/fetch-timeout.js";
 import type { WizardPrompter } from "./prompts.js";
+import { execFile } from "node:child_process";
+import { promisify } from "node:util";
+
+const execFileAsync = promisify(execFile);
 
 const OLLAMA_DEFAULT_BASE_URL = "http://127.0.0.1:11434";
 const OLLAMA_DOWNLOAD_URL = "https://ollama.com/download";
+const OLLAMA_WINDOWS_INSTALLER_URL =
+  "https://ollama.com/download/OllamaSetup.exe";
 const OLLAMA_PROBE_TIMEOUT_MS = 5000;
 const OLLAMA_PULL_TIMEOUT_MS = 5 * 60 * 1000;
+const OLLAMA_INSTALL_TIMEOUT_MS = 5 * 60 * 1000;
 const OLLAMA_SUGGESTED_MODELS = ["glm-4.7-flash", "llama3.2", "qwen2.5:3b"];
 
 type OllamaTagModel = {
@@ -182,7 +189,7 @@ async function pullOllamaModel(
 
 async function waitForOllama(
   prompter: WizardPrompter,
-  maxAttempts: number = 60,
+  maxAttempts: number = 90,
 ): Promise<boolean> {
   const spinner = prompter.progress("Waiting for Ollama to start...");
   for (let i = 0; i < maxAttempts; i++) {
@@ -200,33 +207,212 @@ async function waitForOllama(
   return false;
 }
 
+async function installOllamaViaWinget(
+  prompter: WizardPrompter,
+): Promise<{ ok: boolean; error?: string }> {
+  const spinner = prompter.progress("Installing Ollama via winget...");
+  try {
+    const { stdout, stderr } = await execFileAsync(
+      "winget",
+      ["install", "--id", "Ollama.Ollama", "--silent", "--accept-package-agreements", "--accept-source-agreements"],
+      { timeout: OLLAMA_INSTALL_TIMEOUT_MS, shell: true },
+    );
+    spinner.stop("Ollama installed via winget");
+    if (stderr && stderr.toLowerCase().includes("error")) {
+      return { ok: false, error: stderr };
+    }
+    return { ok: true };
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err);
+    if (msg.includes("ENOENT") || msg.includes("not recognized")) {
+      spinner.stop("winget not available");
+      return { ok: false, error: "winget not found" };
+    }
+    spinner.stop(`winget install failed: ${msg}`);
+    return { ok: false, error: msg };
+  }
+}
+
+async function installOllamaViaInstaller(
+  prompter: WizardPrompter,
+  openUrl: (url: string) => Promise<void>,
+): Promise<{ ok: boolean; error?: string }> {
+  const spinner = prompter.progress("Downloading Ollama installer...");
+  try {
+    const res = await fetchWithTimeout(
+      OLLAMA_WINDOWS_INSTALLER_URL,
+      { method: "GET" },
+      60000,
+    );
+    if (!res.ok) {
+      spinner.stop(`Failed to download installer (HTTP ${res.status})`);
+      return { ok: false, error: `HTTP ${res.status}` };
+    }
+    if (!res.body) {
+      spinner.stop("No response body from download");
+      return { ok: false, error: "no body" };
+    }
+
+    const os = await import("node:os");
+    const path = await import("node:path");
+    const fs = await import("node:fs/promises");
+    const tmpDir = os.tmpdir();
+    const installerPath = path.join(tmpDir, "OllamaSetup.exe");
+
+    const fileStream = await import("node:fs");
+    const writeStream = fileStream.createWriteStream(installerPath);
+    const reader = res.body.getReader();
+
+    let downloaded = 0;
+    for (;;) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      writeStream.write(value);
+      downloaded += value.length;
+      spinner.update(`Downloading Ollama... ${(downloaded / (1024 * 1024)).toFixed(1)} MB`);
+    }
+    writeStream.end();
+    await new Promise<void>((resolve, reject) => {
+      writeStream.on("finish", resolve);
+      writeStream.on("error", reject);
+    });
+
+    spinner.stop("Installer downloaded, running silent install...");
+
+    await execFileAsync(installerPath, ["/SILENT", "/NORESTART"], {
+      timeout: OLLAMA_INSTALL_TIMEOUT_MS,
+      shell: true,
+    });
+
+    try {
+      await fs.unlink(installerPath);
+    } catch {
+      // ignore cleanup errors
+    }
+
+    return { ok: true };
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err);
+    spinner.stop(`Installer failed: ${msg}`);
+    return { ok: false, error: msg };
+  }
+}
+
+async function installOllama(params: {
+  prompter: WizardPrompter;
+  runtime: RuntimeEnv;
+  openUrl: (url: string) => Promise<void>;
+}): Promise<{ ok: boolean }> {
+  const { prompter, runtime, openUrl } = params;
+
+  const platform = process.platform;
+
+  if (platform === "win32") {
+    const wingetResult = await installOllamaViaWinget(prompter);
+    if (wingetResult.ok) {
+      return { ok: true };
+    }
+
+    await prompter.note(
+      [
+        `winget install failed: ${wingetResult.error}`,
+        "Trying direct installer download...",
+      ].join("\n"),
+      "winget fallback",
+    );
+
+    const installerResult = await installOllamaViaInstaller(prompter, openUrl);
+    if (installerResult.ok) {
+      return { ok: true };
+    }
+
+    await prompter.note(
+      [
+        `Installer download failed: ${installerResult.error}`,
+        "",
+        "Please install Ollama manually:",
+        `1. Open ${OLLAMA_DOWNLOAD_URL}`,
+        "2. Download and run the Windows installer",
+        "3. Come back here after installation",
+      ].join("\n"),
+      "Manual install required",
+    );
+
+    await openUrl(OLLAMA_DOWNLOAD_URL);
+    return { ok: false };
+  }
+
+  if (platform === "darwin") {
+    await prompter.note(
+      [
+        "Auto-install is not yet supported on macOS.",
+        "",
+        "Please install Ollama manually:",
+        `1. Open ${OLLAMA_DOWNLOAD_URL}`,
+        "2. Download and install Ollama",
+        "3. Come back here after installation",
+      ].join("\n"),
+      "Manual install required",
+    );
+
+    await openUrl(OLLAMA_DOWNLOAD_URL);
+    return { ok: false };
+  }
+
+  if (platform === "linux") {
+    const spinner = prompter.progress("Installing Ollama...");
+    try {
+      await execFileAsync(
+        "sh",
+        ["-c", "curl -fsSL https://ollama.com/install.sh | sh"],
+        {
+          timeout: OLLAMA_INSTALL_TIMEOUT_MS,
+        },
+      );
+      spinner.stop("Ollama installed via install script");
+      return { ok: true };
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : String(err);
+      spinner.stop(`Install script failed: ${msg}`);
+      await prompter.note(
+        [
+          "Auto-install failed. Please install manually:",
+          "curl -fsSL https://ollama.com/install.sh | sh",
+        ].join("\n"),
+        "Manual install required",
+      );
+      return { ok: false };
+    }
+  }
+
+  await prompter.note(
+    [
+      `Auto-install not supported on ${platform}.`,
+      `Please visit ${OLLAMA_DOWNLOAD_URL}`,
+    ].join("\n"),
+    "Unsupported platform",
+  );
+  return { ok: false };
+}
+
 export async function setupOllama(params: {
   config: OpenClawConfig;
   prompter: WizardPrompter;
   runtime: RuntimeEnv;
   openUrl: (url: string) => Promise<void>;
 }): Promise<OllamaSetupResult> {
-  const { config, prompter, openUrl } = params;
+  const { config, prompter, runtime, openUrl } = params;
 
   let probe = await probeOllama();
 
   if (!probe.reachable) {
-    await prompter.note(
-      [
-        "Ollama is not running on this machine.",
-        "",
-        "Ollama lets you run AI models locally for free.",
-      ].join("\n"),
-      "Ollama not found",
-    );
-
     const installChoice = await prompter.select({
-      message: "What would you like to do?",
+      message: "Ollama is not installed. Install it now?",
       options: [
         {
-          value: "download",
-          label: "Download Ollama",
-          hint: "Opens ollama.com/download",
+          value: "install",
+          label: "Yes, install Ollama",
+          hint: "Automatic install for your system",
         },
         {
           value: "skip",
@@ -240,30 +426,25 @@ export async function setupOllama(params: {
       return { status: "skipped" };
     }
 
-    await openUrl(OLLAMA_DOWNLOAD_URL);
-    await prompter.note(
-      [
-        "Download page opened. After installing Ollama:",
-        "1. Start the Ollama application",
-        "2. Confirm below and we'll continue automatically",
-      ].join("\n"),
-      "Install Ollama",
-    );
+    const installResult = await installOllama({ prompter, runtime, openUrl });
 
-    const confirmed = await prompter.confirm({
-      message: "Is Ollama installed and running?",
-      initialValue: false,
-    });
+    if (!installResult.ok) {
+      const retryChoice = await prompter.confirm({
+        message: "Is Ollama installed now? (we'll check automatically)",
+        initialValue: false,
+      });
 
-    if (!confirmed) {
-      return { status: "skipped" };
+      if (!retryChoice) {
+        return { status: "skipped" };
+      }
     }
 
     const started = await waitForOllama(prompter);
     if (!started) {
       await prompter.note(
         [
-          "Could not detect Ollama. Make sure it's running and try again.",
+          "Could not detect Ollama starting up.",
+          "Make sure the Ollama application is running.",
           `Default URL: ${OLLAMA_DEFAULT_BASE_URL}`,
         ].join("\n"),
         "Ollama not detected",
@@ -272,6 +453,13 @@ export async function setupOllama(params: {
     }
 
     probe = await probeOllama();
+    if (!probe.reachable) {
+      await prompter.note(
+        "Ollama is running but returned no response.",
+        "Ollama error",
+      );
+      return { status: "skipped" };
+    }
   }
 
   const existingModels = probe.models;
@@ -281,7 +469,7 @@ export async function setupOllama(params: {
       [
         "Ollama is running but no models are downloaded.",
         "",
-        "You need at least one model to use with DurarAI.",
+        "We'll download a model for you automatically.",
       ].join("\n"),
       "No models found",
     );
@@ -313,7 +501,7 @@ export async function setupOllama(params: {
   if (needsPull) {
     const pulled = await pullOllamaModel(OLLAMA_DEFAULT_BASE_URL, selectedModel, prompter);
     if (!pulled) {
-      params.runtime.error(`Failed to download ${selectedModel}.`);
+      runtime.error(`Failed to download ${selectedModel}.`);
       return { status: "skipped" };
     }
   }
