@@ -21,6 +21,8 @@ jobs:
         run: pnpm install
       - name: Build
         run: pnpm build
+        env:
+          OPENCLAW_A2UI_SKIP_MISSING: '1'
       - name: Publish to npm
         run: npm publish --ignore-scripts --//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}
         env:
