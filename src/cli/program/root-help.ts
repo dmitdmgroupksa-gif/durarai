@@ -3,7 +3,7 @@ import type { OpenClawConfig } from "../../config/config.js";
 import { getPluginCliCommandDescriptors } from "../../plugins/cli.js";
 import type { PluginLoadOptions } from "../../plugins/loader.js";
 import { VERSION } from "../../version.js";
-import { getCoreCliCommandDescriptors } from "./core-command-descriptors.js";
+import { getCoreCliCommandDescriptors, CORE_CLI_COMMAND_DESCRIPTORS } from "./core-command-descriptors.js";
 import { configureProgramHelp } from "./help.js";
 import { getSubCliEntries } from "./subcli-descriptors.js";
 
@@ -61,6 +61,14 @@ export async function renderRootHelpText(renderOptions?: RootHelpRenderOptions):
     program.outputHelp();
   } finally {
     process.stdout.write = originalWrite;
+  }
+  // If no help content was emitted, provide a basic fallback listing core commands
+  if (output.trim().length === 0) {
+    const lines = ["Durar AI Core Commands:"];
+    for (const cmd of CORE_CLI_COMMAND_DESCRIPTORS as readonly any[]) {
+      lines.push(`  ${cmd.name} - ${cmd.description}`);
+    }
+    return lines.join("\n") + "\n";
   }
   return output;
 }
